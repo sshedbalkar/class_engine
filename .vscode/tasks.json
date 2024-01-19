@@ -1,0 +1,49 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "CMake_uclean",
+			"linux": {
+				"command": "${workspaceRoot}/scripts/linux/build_clean.sh"
+			},
+			"options": {
+				"cwd": "${workspaceRoot}/build"
+			},
+			"problemMatcher": [],
+			"detail": "CMake template clean task",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false
+			}
+		},
+		{
+			"label": "cpp_format_file",
+			"type": "shell",
+			"linux": {
+				"command": "${workspaceRoot}/scripts/linux/file_format.sh",
+			},
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"args": [
+				"${file}"
+			],
+			"group": "none",
+			"presentation": {
+				"echo": false,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false
+			},
+			"problemMatcher": "$gcc"
+		}
+	]
+}
