@@ -1,0 +1,17 @@
+{
+    "required":[
+        {"linux": "6.2.0-39-generic"},
+        {"gcc": "12.3.0"},
+        {"g++": "12.3.0"},
+        {"build-essential":"12.9ubuntu3"},
+        {"gdb":"13.1"},
+        {"cmake": "3.25.1"},
+        {"ninja-build":"1.11.1"},
+        {"libsdl2-dev":"2.26.3+dfsg-1"},
+        {"libsdl2-ttf-dev":"2.20.1+dfsg-2"},
+        {"pkg-config":"1.8.1"}
+    ],
+    "optional":[
+        {"ubuntu": "Ubuntu 23.04"}
+    ]
+}

@@ -1,6 +1,11 @@
 set(SubProjects 
     console
+    core
+    utils
+    gui
 )
+
+include_directories(${MRC_INCLUDE_DIRS})
 
 foreach(SubProject IN LISTS SubProjects)
     if(NOT TARGET ${SubProject})

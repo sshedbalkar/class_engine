@@ -4,10 +4,12 @@ project(console
     VERSION 0.0.1
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/src/include)
+add_compile_options(
+    $<$<CONFIG:Debug>:-g>
+)
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/console.c
+    ${PROJECT_SOURCE_DIR}/mrc_console.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})
