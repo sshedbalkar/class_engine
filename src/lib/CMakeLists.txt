@@ -1,6 +1,7 @@
 set(SubProjects 
     console
     core
+    containers
     utils
     gui
 )

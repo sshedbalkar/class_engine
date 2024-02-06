@@ -1,0 +1,63 @@
+/*
+Copyright (c) Santosh Shedbalkar
+Year: 2024 - 2024
+All rights reserved
+
+File: mrc_vector.c
+*/
+#include "mrc_vector.h"
+#include "mrc_memory.h"
+#include "mrc_console.h"
+
+void mrc_vector_init(mrc_vector_t *v) {
+    v->capacity = VECTOR_INIT_CAPACITY;
+    v->length = 0;
+    v->items = mrc_alloc(sizeof(void *) * v->capacity);
+}
+
+int mrc_vector_total(mrc_vector_t *v) { return v->length; }
+
+static void mrc_vector_resize(mrc_vector_t *v, int capacity) {
+#ifdef DEBUG_ON
+    mrc_print("mrc_vector_resize: %d to %d\n", v->capacity, capacity);
+#endif
+
+    void **items = mrc_realloc(v->items, sizeof(void *) * capacity);
+    if (items) {
+        v->items = items;
+        v->capacity = capacity;
+    }
+}
+
+void mrc_vector_add(mrc_vector_t *v, void *item) {
+    if (v->capacity == v->length) mrc_vector_resize(v, v->capacity * 2);
+    v->items[v->length++] = item;
+}
+
+void mrc_vector_set(mrc_vector_t *v, int index, void *item) {
+    if (index >= 0 && index < v->length) v->items[index] = item;
+}
+
+void *mrc_vector_get(mrc_vector_t *v, int index) {
+    if (index >= 0 && index < v->length) return v->items[index];
+    return NULL;
+}
+
+void mrc_vector_delete(mrc_vector_t *v, int index) {
+    if (index < 0 || index >= v->length) return;
+
+    v->items[index] = NULL;
+    int i;
+    for (i = 0; i < v->length - 1; i++) {
+        v->items[i] = v->items[i + 1];
+        v->items[i + 1] = NULL;
+    }
+
+    v->length--;
+#ifdef VECTOR_REALLOC_ON_DELETE
+    if (v->length > 0 && v->length == v->capacity / 4)
+        mrc_vector_resize(v, v->capacity / 2);
+#endif
+}
+
+void mrc_vector_free(mrc_vector_t *v) { mrc_free(v->items); }

@@ -12,7 +12,7 @@ File: mrc_vector.h
 #include <stddef.h>
 
 #define VECTOR_INIT_CAPACITY 4
-#define VECTOR_REALLOC_ON_DELETE 1
+#define VECTOR_REALLOC_ON_DELETE
 
 typedef struct {
     size_t length;
@@ -23,7 +23,7 @@ typedef struct {
 
 void mrc_vector_init(mrc_vector_t *);
 int mrc_vector_total(mrc_vector_t *);
-static void mrc_vector_resize(mrc_vector_t *, int);
+// static void mrc_vector_resize(mrc_vector_t *, int);
 void mrc_vector_add(mrc_vector_t *, void *);
 void mrc_vector_set(mrc_vector_t *, int, void *);
 void *mrc_vector_get(mrc_vector_t *, int);
