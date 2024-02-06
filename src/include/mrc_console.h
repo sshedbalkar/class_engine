@@ -7,6 +7,6 @@ All rights reserved
 #ifndef __MRC_CONSOLE_H
 #define __MRC_CONSOLE_H
 
-void mrc_print(const char *text);
+int mrc_print(const char *format, ...);
 
 #endif    //__MRC_CONSOLE_H

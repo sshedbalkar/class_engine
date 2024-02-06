@@ -14,3 +14,4 @@ set(SourceFiles
 )
 
 add_library(${PROJECT_NAME} ${SourceFiles})
+target_link_libraries(${PROJECT_NAME} PRIVATE core)
