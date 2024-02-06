@@ -1,3 +1,6 @@
 {
-    "cpp_proj_configured": true
+    "cpp_proj_configured": true,
+    "files.associations": {
+        "merci_engine.h": "c"
+    }
 }

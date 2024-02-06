@@ -50,4 +50,4 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_executable(${PROJECT_NAME} main.c)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2)
+target_link_libraries(${PROJECT_NAME} PRIVATE merci_engine SDL2::SDL2)
