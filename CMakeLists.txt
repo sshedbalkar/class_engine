@@ -7,9 +7,9 @@ a CMake list where the target is not defined in the list
 if(POLICY CMP0079)
   cmake_policy(SET CMP0079 NEW)
 endif()
+set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
-set(CMAKE_COLOR_MAKEFILE ON)
 
 set (OSBitness 32)
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)

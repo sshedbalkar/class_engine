@@ -8,3 +8,5 @@ All rights reserved
 typedef struct {
     void** modules;
 } mrc_engine_t;
+
+static void mrc_engine_init() {}

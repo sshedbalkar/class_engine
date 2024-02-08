@@ -9,7 +9,9 @@ All rights reserved
 
 #define TRUE 1
 #define FALSE 0
+#ifndef NULL
 #define NULL 0
+#endif
 
 #ifdef __cplusplus
 #define EXTERNC extern "C"

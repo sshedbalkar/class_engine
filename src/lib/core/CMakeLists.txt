@@ -15,4 +15,4 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/mrc_modules.c
 )
 
-add_library(${PROJECT_NAME} ${SourceFiles})
+add_library(${PROJECT_NAME} SHARED ${SourceFiles})

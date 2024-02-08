@@ -12,5 +12,6 @@ All rights reserved
 #include "mrc_console.h"
 #include "mrc_memory.h"
 #include "mrc_vector.h"
+#include "mrc_eng_container.h"
 
 #endif    // __MERCI_ENGINE_H
