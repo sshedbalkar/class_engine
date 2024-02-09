@@ -6,7 +6,9 @@ All rights reserved
 #ifndef __MRC_UI_H
 #define __MRC_UI_H
 
-void mrc_ui_init();
-void mrc_ui_test1();
+typedef struct {
+} mrc_ui_t;
+extern void mrc_ui_init(mrc_ui_t* obj);
+extern void mrc_ui_test1(mrc_ui_t* obj);
 
 #endif    // __MRC_UI_H

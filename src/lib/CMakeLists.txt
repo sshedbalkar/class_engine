@@ -13,6 +13,11 @@ set(SubProjects
     gui
 )
 
+set(MRC_INCLUDE_DIRS 
+    "${PROJECT_SOURCE_DIR}/../include"
+    "${PROJECT_SOURCE_DIR}/core/include"
+)
+
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/merci_engine.c
 )

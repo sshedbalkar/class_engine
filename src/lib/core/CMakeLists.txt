@@ -11,8 +11,8 @@ add_compile_options(
 
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/mrc_memory.c
-    ${PROJECT_SOURCE_DIR}/mrc_eng_container.c
     ${PROJECT_SOURCE_DIR}/mrc_modules.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)

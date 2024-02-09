@@ -1,6 +1,36 @@
 {
     "cpp_proj_configured": true,
     "files.associations": {
-        "merci_engine.h": "c"
+        "merci_engine.h": "c",
+        "sdl.h": "c",
+        "close_code.h": "c",
+        "begin_code.h": "c",
+        "sdl_main.h": "c",
+        "sdl_stdinc.h": "c",
+        "sdl_config.h": "c",
+        "_real_sdl_config.h": "c",
+        "sdl_platform.h": "c",
+        "sdl_audio.h": "c",
+        "sdl_assert.h": "c",
+        "sdl_events.h": "c",
+        "sdl_metal.h": "c",
+        "sdl_system.h": "c",
+        "sdl_video.h": "c",
+        "sdl_version.h": "c",
+        "sdl_misc.h": "c",
+        "sdl_loadso.h": "c",
+        "sdl_hidapi.h": "c",
+        "sdl_hints.h": "c",
+        "sdl_messagebox.h": "c",
+        "sdl_log.h": "c",
+        "sdl_locale.h": "c",
+        "sdl_rwops.h": "c",
+        "sdl_clipboard.h": "c",
+        "sdl_cpuinfo.h": "c",
+        "sdl_endian.h": "c",
+        "sdl_power.h": "c",
+        "sdl_render.h": "c",
+        "sdl_shape.h": "c",
+        "mrc_engine_main_p.h": "c"
     }
 }

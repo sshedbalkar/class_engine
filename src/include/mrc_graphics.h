@@ -6,7 +6,10 @@ All rights reserved
 #ifndef __MRC_GRAPHICS_H
 #define __MRC_GRAPHICS_H
 
-void mrc_graphics_init();
-void mrc_graphics_test1();
+typedef struct {
+} mrc_graphics_t;
+
+extern void mrc_graphics_init(mrc_graphics_t* obj);
+extern void mrc_graphics_test1(mrc_graphics_t* obj);
 
 #endif    // __MRC_GRAPHICS_H

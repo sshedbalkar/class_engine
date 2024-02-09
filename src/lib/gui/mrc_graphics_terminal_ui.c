@@ -5,8 +5,8 @@ All rights reserved
 */
 #include <argp.h>
 #include "mrc_graphics.h"
-#include "mrc_graphics_terminal_ui.h"
-#include "mrc_ui_terminal_ui.h"
+#include "mrc_graphics_terminal_ui_p.h"
+#include "mrc_ui_terminal_ui_p.h"
 #include "mrc_console.h"
 
 static int parse_opt(int key, char* arg, struct argp_state* state) {

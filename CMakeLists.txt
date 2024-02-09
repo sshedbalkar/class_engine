@@ -21,8 +21,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FullOutputDir}/static_libs")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FullOutputDir}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
 
-set(MRC_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/include")
-
 if(MSVC)
     # Fixes the issue of MSVC not exporting symbols and requiring 
     # a funny macro 
@@ -33,7 +31,7 @@ endif()
 
 # Extract version from ./src/include/mrc_version.h
 set(VERSION_REGEX "#define APP_VERSION[ \t]+\"(.+)\"")
-file(STRINGS "${MRC_INCLUDE_DIRS}/mrc_version.h"
+file(STRINGS "${CMAKE_SOURCE_DIR}/src/include/mrc_version.h"
     VERSION_STRING REGEX ${VERSION_REGEX})
 string(REGEX REPLACE ${VERSION_REGEX} "\\1" VERSION_STRING "${VERSION_STRING}")
 

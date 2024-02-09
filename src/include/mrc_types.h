@@ -7,7 +7,11 @@ All rights reserved
 #ifndef __MRC_TYPES_H
 #define __MRC_TYPES_H
 
-typedef unsigned int bool_t;
+typedef enum {
+    FALSE 0,
+    TRUE 1
+} bool_t;
+
 enum mrc_module_type_t;
 typedef void (*mrc_fn_v_v_t)();
 typedef void (*mrc_fn_v_vp_t)(void*);

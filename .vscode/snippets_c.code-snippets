@@ -20,19 +20,24 @@
 	"HeaderGuard": {
     "scope": "c,cpp",
     "prefix": ["hguard"],
-    "body": ["#ifndef __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H", "#define __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H", "", "$0", "", "#endif ${LINE_COMMENT} __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H"],
+    "body": ["#ifndef __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H", 
+	"#define __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H", 
+	"", 
+	"$0", 
+	"", 
+	"#endif ${LINE_COMMENT} __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_H"],
 	"description": "Inserts Header guard"
   },
   "CopyRightText": {
     "scope": "c,cpp",
     "prefix": ["crt","cpright","crtext"],
-    "body": ["$BLOCK_COMMENT_START",
-	"Copyright (c) Santosh Shedbalkar",
-	"Year: 2024 - ${CURRENT_YEAR}"
-	"All rights reserved",
-	""
-	"File: ${TM_FILENAME}"
-	"$BLOCK_COMMENT_END",
+    "body": ["${BLOCK_COMMENT_START}*",
+	" * Copyright (c) Santosh Shedbalkar",
+	" * Year: 2024 - ${CURRENT_YEAR}"
+	" * All rights reserved",
+	" *"
+	" * File: ${TM_FILENAME}"
+	" ${BLOCK_COMMENT_END}",
 	""],
 	"description": "Inserts custom CopyRight text"
   }
