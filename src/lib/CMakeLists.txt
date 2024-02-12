@@ -19,7 +19,7 @@ set(MRC_INCLUDE_DIRS
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/merci_engine.c
+    ${PROJECT_SOURCE_DIR}/mrc_engine_main.c
 )
 
 include_directories(${MRC_INCLUDE_DIRS})

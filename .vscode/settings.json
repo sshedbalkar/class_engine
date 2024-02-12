@@ -31,6 +31,7 @@
         "sdl_power.h": "c",
         "sdl_render.h": "c",
         "sdl_shape.h": "c",
-        "mrc_engine_main_p.h": "c"
+        "mrc_engine_main_p.h": "c",
+        "mrc_defines.h": "c"
     }
 }
