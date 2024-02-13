@@ -6,7 +6,8 @@ All rights reserved
 #ifndef __MRC_GRAPHICS_TERMINAL_UI_H
 #define __MRC_GRAPHICS_TERMINAL_UI_H
 
-struct argp;
+#include <argp.h>
+
 extern struct argp graphics_argp;
 
 #endif    // __MRC_GRAPHICS_TERMINAL_UI_H

@@ -15,11 +15,12 @@ set(SubProjects
 
 set(MRC_INCLUDE_DIRS 
     "${PROJECT_SOURCE_DIR}/../include"
-    "${PROJECT_SOURCE_DIR}/core/include"
+    "${PROJECT_SOURCE_DIR}/include"
 )
 
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/mrc_engine_main.c
+    ${PROJECT_SOURCE_DIR}/mrc_engine_terminal_ui.c
 )
 
 include_directories(${MRC_INCLUDE_DIRS})

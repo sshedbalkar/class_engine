@@ -1,0 +1,3 @@
+#!/bin/bash
+echo Deleting build...
+rm -rf ../build

@@ -10,8 +10,8 @@ All rights reserved
 #include "mrc_console.h"
 #include "mrc_memory.h"
 
-static mrc_obj_static_t __base = {MRC_CONSOLE, &mrc_console_ctor,
-                                  &mrc_console_dtor};
+static mrc_obj_static_t __base = {MRC_CONSOLE, (mrc_fn_vp_v_t)&mrc_console_ctor,
+                                  (mrc_fn_i_vp_t)&mrc_console_dtor};
 
 int mrc_print(const char* format, ...) {
     int result;

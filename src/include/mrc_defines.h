@@ -9,6 +9,7 @@ All rights reserved
 
 #ifndef NULL
 #define NULL 0
+#define NULL_STR "\0"
 #endif
 
 #ifdef __cplusplus

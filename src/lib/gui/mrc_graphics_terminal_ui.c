@@ -3,7 +3,6 @@ Copyright (c) Santosh Shedbalkar
 Year: 2024 -
 All rights reserved
 */
-#include <argp.h>
 #include "mrc_graphics.h"
 #include "mrc_graphics_terminal_ui_p.h"
 #include "mrc_ui_terminal_ui_p.h"
@@ -12,7 +11,7 @@ All rights reserved
 static int parse_opt(int key, char* arg, struct argp_state* state) {
     switch (key) {
         case 800:
-            mrc_graphics_test1();
+            mrc_print("mrc_graphics option: 800");
             break;
         case 801:
             mrc_print("mrc_graphics option: 801");

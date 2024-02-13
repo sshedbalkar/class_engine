@@ -3,7 +3,6 @@ Copyright (c) Santosh Shedbalkar
 Year: 2024 -
 All rights reserved
 */
-#include <argp.h>
 #include "mrc_ui.h"
 #include "mrc_ui_terminal_ui_p.h"
 #include "mrc_console.h"
@@ -11,7 +10,7 @@ All rights reserved
 static int parse_opt(int key, char* arg, struct argp_state* state) {
     switch (key) {
         case 900:
-            mrc_ui_test1();
+            mrc_print("mrc_ui option: 900");
             break;
         case 901:
             mrc_print("mrc_ui option: 901");

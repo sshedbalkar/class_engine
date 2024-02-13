@@ -10,10 +10,24 @@
 #include "mrc_memory.h"
 #include "mrc_console.h"
 
-static mrc_obj_static_t __base = {MRC_ENGINE, &mrc_engine_ctor,
-                                  &mrc_engine_dtor};
+static mrc_obj_static_t __base = {MRC_ENGINE, (mrc_fn_vp_v_t)&mrc_engine_ctor,
+                                  (mrc_fn_i_vp_t)&mrc_engine_dtor};
 
 static mrc_vector_t __modules_map;
+
+static void __add_default_modules(mrc_engine_t* eng) {
+    mrc_console_t* console = mrc_console_ctor();
+    mrc_vector_add(&eng->modules, console);
+}
+
+static void __remove_all_modules(mrc_engine_t* eng) {
+    int i, t = mrc_vector_total(&eng->modules);
+    mrc_obj_static_t* module;
+    for (i = 0; i < t; ++i) {
+        module = (mrc_obj_static_t*)mrc_vector_get(&eng->modules, i);
+        if (module != NULL) module->dtor(module);
+    }
+}
 
 mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_init_capacity(&__modules_map, MRC_ENGINE_DEFAULT_MODULE_COUNT);
@@ -44,11 +58,6 @@ mrc_engine_t* mrc_engine_ctor() {
     return eng;
 }
 
-static void __add_default_modules(mrc_engine_t* eng) {
-    mrc_console_t* console = mrc_console_ctor();
-    mrc_vector_add(&eng->modules, console);
-}
-
 int mrc_engine_dtor(mrc_engine_t* eng) {
     __remove_all_modules(eng);
     mrc_vector_free(&eng->modules);
@@ -56,14 +65,6 @@ int mrc_engine_dtor(mrc_engine_t* eng) {
     return 0;
 }
 
-static void __remove_all_modules(mrc_engine_t* eng) {
-    int i, t = mrc_vector_total(&eng->modules);
-    mrc_obj_static_t* module;
-    for (i = 0; i < t; ++i) {
-        module = (mrc_obj_static_t*)mrc_vector_get(&eng->modules, i);
-        if (module != NULL) module->dtor(module);
-    }
-}
 int mrc_engine_add_module(mrc_engine_t* eng, mrc_module_type_t type) {
     mrc_obj_static_t* mod =
         ((mrc_obj_static_t*)mrc_vector_get(&__modules_map, type))->ctor();

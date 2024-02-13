@@ -6,7 +6,8 @@ All rights reserved
 #ifndef __MRC_UI_TERMINAL_UI_H
 #define __MRC_UI_TERMINAL_UI_H
 
-struct argp;
+#include <argp.h>
+
 extern struct argp ui_argp;
 
 #endif    // __MRC_UI_TERMINAL_UI_H

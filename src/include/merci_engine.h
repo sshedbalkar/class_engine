@@ -10,5 +10,6 @@
 #define __MERCI_ENGINE_H
 
 #include "mrc_engine_main.h"
+#include "mrc_version.h"
 
 #endif    // __MERCI_ENGINE_H

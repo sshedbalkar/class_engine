@@ -32,6 +32,14 @@
         "sdl_render.h": "c",
         "sdl_shape.h": "c",
         "mrc_engine_main_p.h": "c",
-        "mrc_defines.h": "c"
+        "mrc_defines.h": "c",
+        "mrc_ui_terminal_ui_p.h": "c",
+        "mrc_version.h": "c",
+        "argp.h": "c",
+        "ws_terminal_ui.h": "c",
+        "ws_main.h": "c",
+        "mrc_engine_main.h": "c",
+        "mrc_vector.h": "c",
+        "stddef.h": "c"
     }
 }

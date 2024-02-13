@@ -16,8 +16,12 @@ typedef enum {
     MRC_CORE,
     MRC_CONSOLE,
     MRC_GRAPHICS,
-    MRC_GRAPHICS_UI
+    MRC_GRAPHICS_UI,
+    //
+    MRC_MODULES_COUNT
 } mrc_module_type_t;
+
+extern const char* mrc_module_type_t_to_string(mrc_module_type_t);
 
 typedef void (*mrc_fn_v_v_t)();
 typedef void (*mrc_fn_v_vp_t)(void*);
