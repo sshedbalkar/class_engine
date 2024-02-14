@@ -45,11 +45,18 @@ void mrc_vector_add(mrc_vector_t *v, void *item) {
 }
 
 void mrc_vector_set(mrc_vector_t *v, unsigned int index, void *item) {
-    if (index >= 0 && index < v->length) v->items[index] = item;
+    if (index >= 0 && index < v->capacity) {
+        v->items[index] = item;
+        ++v->length;
+    }
+}
+
+void mrc_vector_replace(mrc_vector_t *v, unsigned int index, void *item) {
+    if (index >= 0 && index < v->capacity) v->items[index] = item;
 }
 
 void *mrc_vector_get(mrc_vector_t *v, unsigned int index) {
-    if (index >= 0 && index < v->length) return v->items[index];
+    if (index >= 0 && index < v->capacity) return v->items[index];
     return NULL;
 }
 
@@ -81,7 +88,7 @@ void mrc_vector_free(mrc_vector_t *v) {
 
 void mrc_vector_foreach(mrc_vector_t *v, mrc_fn_v_vp_t fn) {
     int i;
-    for (i = 0; i < v->length; ++i) {
+    for (i = 0; i < v->capacity; ++i) {
         (*fn)(v->items[i]);
     }
 }

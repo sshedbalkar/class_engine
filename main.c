@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     if (ws_parse_args(argc, argv, app) == 0) {
         mrc_print("Successfully parsed\n");
     }
+    ws_app_dtor(app);
     //
     return 0;
 }

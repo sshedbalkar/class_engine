@@ -28,6 +28,7 @@ int mrc_vector_total(mrc_vector_t *);
 // static void mrc_vector_resize(mrc_vector_t *, int);
 void mrc_vector_add(mrc_vector_t *, void *);
 void mrc_vector_set(mrc_vector_t *, unsigned int, void *);
+void mrc_vector_replace(mrc_vector_t *, unsigned int, void *);
 void *mrc_vector_get(mrc_vector_t *, unsigned int);
 void mrc_vector_delete(mrc_vector_t *, unsigned int);
 void mrc_vector_free(mrc_vector_t *);

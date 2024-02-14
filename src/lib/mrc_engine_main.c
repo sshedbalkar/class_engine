@@ -9,6 +9,7 @@
 #include "mrc_engine_main.h"
 #include "mrc_memory.h"
 #include "mrc_console.h"
+#include "mrc_graphics.h"
 
 static mrc_obj_static_t __base = {MRC_ENGINE, (mrc_fn_vp_v_t)&mrc_engine_ctor,
                                   (mrc_fn_i_vp_t)&mrc_engine_dtor};
@@ -22,10 +23,10 @@ static void __add_default_modules(mrc_engine_t* eng) {
 
 static void __remove_all_modules(mrc_engine_t* eng) {
     int i, t = mrc_vector_total(&eng->modules);
-    mrc_obj_static_t* module;
+    mrc_obj_static_t** pmodule;
     for (i = 0; i < t; ++i) {
-        module = (mrc_obj_static_t*)mrc_vector_get(&eng->modules, i);
-        if (module != NULL) module->dtor(module);
+        pmodule = (mrc_obj_static_t**)mrc_vector_get(&eng->modules, i);
+        if (*pmodule != NULL) (*pmodule)->dtor(pmodule);
     }
 }
 
@@ -37,6 +38,7 @@ mrc_obj_static_t* mrc_engine_static_init() {
     // MRC_CONSOLE,
     mrc_vector_set(&__modules_map, MRC_CONSOLE, mrc_console_static_init());
     // MRC_GRAPHICS,
+    mrc_vector_set(&__modules_map, MRC_GRAPHICS, mrc_graphics_static_init());
     // MRC_GRAPHICS_UI
     return &__base;
 }
@@ -73,26 +75,32 @@ int mrc_engine_add_module(mrc_engine_t* eng, mrc_module_type_t type) {
 }
 
 int mrc_engine_remove_module(mrc_engine_t* eng, mrc_module_type_t type) {
-    int i, t = mrc_vector_total(&eng->modules), count = 0;
-    mrc_obj_static_t* mod;
-    for (i = 0; i < t; ++i) {
-        mod = mrc_vector_get(&eng->modules, i);
-        if (mod->type == type) {
-            mod->dtor(mod);
-            mrc_vector_delete(&eng->modules, i);
-            ++count;
+    int i, t = mrc_vector_total(&eng->modules), count = 0, found = 0;
+    mrc_obj_static_t** pmod;
+    do {
+        found = 0;
+        t = mrc_vector_total(&eng->modules);
+        for (i = 0; i < t; ++i) {
+            pmod = mrc_vector_get(&eng->modules, i);
+            if ((*pmod)->type == type) {
+                found = 1;
+                (*pmod)->dtor(pmod);
+                mrc_vector_delete(&eng->modules, i);
+                i = t;
+                ++count;
+            }
         }
-    }
+    } while (found > 0);
     return count;
 }
 
 mrc_obj_static_t* mrc_engine_get_module(mrc_engine_t* eng,
                                         mrc_module_type_t type) {
     int i, t = mrc_vector_total(&eng->modules);
-    mrc_obj_static_t* module;
+    mrc_obj_static_t** pmodule;
     for (i = 0; i < t; ++i) {
-        module = (mrc_obj_static_t*)mrc_vector_get(&eng->modules, i);
-        if (module->type == type) return module;
+        pmodule = (mrc_obj_static_t**)mrc_vector_get(&eng->modules, i);
+        if ((*pmodule)->type == type) return *pmodule;
     }
     return NULL;
 }

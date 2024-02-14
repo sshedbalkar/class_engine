@@ -20,6 +20,8 @@ ws_app_t* ws_app_ctor() {
     __do_static_init();
     ws_app_t* app = __create();
     app->engine = mrc_engine_ctor();
+    mrc_engine_add_module(app->engine, MRC_GRAPHICS);
+    int r = mrc_engine_remove_module(app->engine, MRC_GRAPHICS);
     return app;
 }
 
