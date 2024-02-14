@@ -21,6 +21,7 @@ ws_app_t* ws_app_ctor() {
     ws_app_t* app = __create();
     app->engine = mrc_engine_ctor();
     mrc_engine_add_module(app->engine, MRC_GRAPHICS);
+    mrc_engine_add_module(app->engine, MRC_GRAPHICS_UI);
     int r = mrc_engine_remove_module(app->engine, MRC_GRAPHICS);
     return app;
 }

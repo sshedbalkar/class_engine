@@ -41,6 +41,7 @@
         "mrc_engine_main.h": "c",
         "mrc_vector.h": "c",
         "stddef.h": "c",
-        "mrc_types.h": "c"
+        "mrc_types.h": "c",
+        "mrc_ui.h": "c"
     }
 }

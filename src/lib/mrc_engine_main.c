@@ -10,6 +10,7 @@
 #include "mrc_memory.h"
 #include "mrc_console.h"
 #include "mrc_graphics.h"
+#include "mrc_ui.h"
 
 static mrc_obj_static_t __base = {MRC_ENGINE, (mrc_fn_vp_v_t)&mrc_engine_ctor,
                                   (mrc_fn_i_vp_t)&mrc_engine_dtor};
@@ -40,6 +41,7 @@ mrc_obj_static_t* mrc_engine_static_init() {
     // MRC_GRAPHICS,
     mrc_vector_set(&__modules_map, MRC_GRAPHICS, mrc_graphics_static_init());
     // MRC_GRAPHICS_UI
+    mrc_vector_set(&__modules_map, MRC_GRAPHICS_UI, mrc_ui_static_init());
     return &__base;
 }
 
