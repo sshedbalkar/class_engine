@@ -14,10 +14,12 @@ static ws_app_t* __create() {
     return app;
 }
 
+static void __do_static_init() { mrc_engine_static_init(); }
+
 ws_app_t* ws_app_ctor() {
+    __do_static_init();
     ws_app_t* app = __create();
     app->engine = mrc_engine_ctor();
-    mrc_print("App created\n");
     return app;
 }
 

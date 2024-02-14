@@ -22,9 +22,10 @@ static int parse_opt(int key, char* arg, struct argp_state* state) {
                 mrc_print(
                     "%s, ",
                     mrc_module_type_t_to_string(
-                        ((mrc_obj_static_t*)mrc_vector_get(&eng->modules, i))
+                        (*(mrc_obj_static_t**)mrc_vector_get(&eng->modules, i))
                             ->type));
             }
+            mrc_print("\n");
             break;
         case 501:
             mrc_print("merci_engine option: 501");
@@ -39,7 +40,7 @@ static struct argp_option options[] = {
     {0}};
 
 static struct argp_child children_parsers[] = {
-    {&graphics_argp, 0, "Basic Graphics options:", 5}, {0}};
+    {&graphics_argp, 0, "Basic Graphics options:", 4}, {0}};
 
 struct argp engine_argp = {
     options, parse_opt, 0,

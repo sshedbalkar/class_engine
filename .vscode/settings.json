@@ -40,6 +40,7 @@
         "ws_main.h": "c",
         "mrc_engine_main.h": "c",
         "mrc_vector.h": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "mrc_types.h": "c"
     }
 }

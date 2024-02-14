@@ -21,7 +21,7 @@ static int parse_opt(int key, char* arg, struct argp_state* state) {
 
 static struct argp_option options[] = {
     {"ui", 900, "NUM", OPTION_ARG_OPTIONAL, "Interact with the UI module"},
-    {"ui2", 901, "NUM", OPTION_ARG_OPTIONAL, "UI Module option 2"},
+    {"ui2", 901, "NUM", OPTION_ARG_OPTIONAL, "UI Module option 6"},
     {0}};
 
 struct argp ui_argp = {options, parse_opt, 0,

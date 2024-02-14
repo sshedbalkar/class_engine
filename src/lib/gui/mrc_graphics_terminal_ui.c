@@ -22,11 +22,11 @@ static int parse_opt(int key, char* arg, struct argp_state* state) {
 
 static struct argp_option options[] = {
     {"gra1", 800, "NUM", OPTION_ARG_OPTIONAL, "Interact with Graphics module"},
-    {"gra2", 801, "NUM", OPTION_ARG_OPTIONAL, "Graphics module option 2"},
+    {"gra2", 801, "NUM", OPTION_ARG_OPTIONAL, "Graphics module option 7"},
     {0}};
 
 static struct argp_child children_parsers[] = {
-    {&ui_argp, 0, "Basic UI options:", 5}, {0}};
+    {&ui_argp, 0, "Basic UI options:", 3}, {0}};
 
 struct argp graphics_argp = {
     options, parse_opt, 0,

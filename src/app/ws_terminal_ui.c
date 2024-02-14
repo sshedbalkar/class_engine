@@ -16,7 +16,7 @@ const char *argp_program_bug_address = PROGRAM_BUG_EMAIL_CONTACT;
 const char *argp_program_version = APP_VERSION;
 
 static int parse_opt(int key, char *arg, struct argp_state *state) {
-    // ws_app_t *app = state->input;
+    ws_app_t *app = state->input;
     //  int total = mrc_vector_total(&app->engine->modules);
     //  mrc_print("WS Current modules in the engine: %d\n", total);
     switch (key) {
@@ -25,6 +25,9 @@ static int parse_opt(int key, char *arg, struct argp_state *state) {
             break;
         case 701:
             mrc_print("WordScape option: 701");
+            break;
+        case ARGP_KEY_INIT:
+            state->child_inputs[0] = app->engine;
             break;
     }
     return 0;
@@ -45,5 +48,5 @@ static struct argp ws_argp = {
     children_parsers};
 
 int ws_parse_args(int argc, char **argv, ws_app_t *app) {
-    return argp_parse(&ws_argp, argc, argv, 0, 0, app->engine);
+    return argp_parse(&ws_argp, argc, argv, 0, 0, app);
 }
