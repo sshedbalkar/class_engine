@@ -8,7 +8,7 @@ All rights reserved
 #define __MRC_DEFINES_H
 
 #ifndef NULL
-#define NULL 0
+#define NULL ((void *)0)
 #endif
 #define NULL_STR '\0'
 

@@ -42,6 +42,7 @@
         "mrc_vector.h": "c",
         "stddef.h": "c",
         "mrc_types.h": "c",
-        "mrc_ui.h": "c"
+        "mrc_ui.h": "c",
+        "mrc_utils.h": "c"
     }
 }

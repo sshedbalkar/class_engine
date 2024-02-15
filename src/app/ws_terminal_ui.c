@@ -16,6 +16,7 @@ const char *argp_program_bug_address = PROGRAM_BUG_EMAIL_CONTACT;
 const char *argp_program_version = APP_VERSION;
 
 static int parse_opt(int key, char *arg, struct argp_state *state) {
+    (void)arg;
     ws_app_t *app = state->input;
     //  int total = mrc_vector_total(&app->engine->modules);
     //  mrc_print("WS Current modules in the engine: %d\n", total);

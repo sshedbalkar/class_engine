@@ -27,6 +27,7 @@ typedef void (*mrc_fn_v_v_t)();
 typedef void (*mrc_fn_v_vp_t)(void*);
 typedef int (*mrc_fn_i_vp_t)(void*);
 typedef void* (*mrc_fn_vp_v_t)();
+typedef const char* (*mrc_fn_ccp_vp_i_t)(void*, int);
 
 typedef struct {
     mrc_module_type_t type;
