@@ -89,9 +89,10 @@ void mrc_vector_free(mrc_vector_t *v) {
     v->capacity = 0;
 }
 
-void mrc_vector_foreach(mrc_vector_t *v, mrc_fn_v_vp_t fn) {
-    unsigned int i;
-    for (i = 0; i < v->capacity; ++i) {
-        (*fn)(v->items[i]);
+void mrc_vector_foreach(mrc_vector_t *_v, mrc_fn_v_vp_ui_vp_t _fn,
+                        void *_param) {
+    unsigned int _i;
+    for (_i = 0; _i < _v->capacity; ++_i) {
+        (*_fn)(_v->items[_i], _i, _param);
     }
 }

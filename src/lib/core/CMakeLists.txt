@@ -12,6 +12,7 @@ add_compile_options(
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/mrc_memory.c
     ${PROJECT_SOURCE_DIR}/mrc_modules.c
+    ${PROJECT_SOURCE_DIR}/mrc_events.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})

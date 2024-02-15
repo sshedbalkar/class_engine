@@ -19,4 +19,8 @@ All rights reserved
 #endif
 
 #define MRC_DEFAULT_STR_BUFF_SIZE 1024
+#define MRC_EVENTS_COUNT_MAX \
+    256    // Max number of events in the app (approx), should be greater than
+           // or equal, try to be conservative with the estimate
+#define MRC_EVENTS_CALLBACKS_PER_EVENT_COUNT 2
 #endif    // __MRC_DEFINES_H

@@ -9,6 +9,7 @@
 #include "mrc_engine_main.h"
 #include "mrc_memory.h"
 #include "mrc_console.h"
+#include "mrc_events.h"
 #include "mrc_graphics.h"
 #include "mrc_ui.h"
 
@@ -35,6 +36,7 @@ mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_init_capacity(&__modules_map, MRC_ENGINE_DEFAULT_MODULE_COUNT);
     mrc_vector_set(&__modules_map, MRC_ENGINE, &__base);
     // MRC_GLUE,
+    mrc_events_static_init();
     // MRC_CORE,
     // MRC_CONSOLE,
     mrc_vector_set(&__modules_map, MRC_CONSOLE, mrc_console_static_init());
@@ -49,6 +51,8 @@ int mrc_engine_static_term() {
     mrc_ui_static_term();
     mrc_graphics_static_term();
     mrc_console_static_term();
+    mrc_events_static_term();
+    mrc_vector_free(&__modules_map);
     return 0;
 }
 void mrc_engine_static_register_module_type(mrc_obj_static_t* tHandler) {

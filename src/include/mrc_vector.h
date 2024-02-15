@@ -33,6 +33,6 @@ void mrc_vector_replace(mrc_vector_t *, unsigned int, void *);
 void *mrc_vector_get(mrc_vector_t *, unsigned int);
 void mrc_vector_delete(mrc_vector_t *, unsigned int);
 void mrc_vector_free(mrc_vector_t *);
-void mrc_vector_foreach(mrc_vector_t *, mrc_fn_v_vp_t);
+void mrc_vector_foreach(mrc_vector_t *, mrc_fn_v_vp_ui_vp_t, void *);
 
 #endif    // __MRC_VECTOR_H

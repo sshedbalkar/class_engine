@@ -11,6 +11,5 @@ All rights reserved
 void* mrc_alloc(size_t size);
 void mrc_free(void* ptr);
 void* mrc_realloc(void* ptr, size_t new_size);
-void* mrc_memcpy(void* dest, const void* src, size_t count);
 
 #endif    // __MRC_MEMORY_H

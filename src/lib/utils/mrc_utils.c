@@ -13,7 +13,7 @@ File: mrc_utils.c
 static unsigned int __id = 0;
 static char __str_buffer[MRC_DEFAULT_STR_BUFF_SIZE];
 
-unsigned int mrc_util_get_unique_id() { return __id++; }
+inline unsigned int mrc_util_get_unique_id() { return __id++; }
 
 const char* mrc_construct_str_from_list(void* _list, mrc_fn_ccp_vp_i_t _fn) {
     int _count = 0, _tlen = 0, _size;

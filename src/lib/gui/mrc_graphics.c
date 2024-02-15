@@ -1,8 +1,11 @@
-/*
-Copyright (c) Santosh Shedbalkar
-Year: 2024 -
-All rights reserved
-*/
+/**
+ * Copyright (c) Santosh Shedbalkar
+ * Year: 2024 - 2024
+ * All rights reserved
+ *
+ * File: mrc_graphics.c
+ */
+
 #include <SDL2/SDL.h>
 #include "mrc_memory.h"
 #include "mrc_console.h"
