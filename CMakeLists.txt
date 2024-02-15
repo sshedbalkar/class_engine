@@ -49,7 +49,6 @@ add_compile_options(
     
 )
 
-find_package(SDL2 REQUIRED)
 include_directories(src/include)
 include_directories(src/app)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -58,4 +57,4 @@ add_executable(${PROJECT_NAME} main.c)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/app)
-target_link_libraries(${PROJECT_NAME} PRIVATE merci_engine word_scape SDL2::SDL2)
+target_link_libraries(${PROJECT_NAME} PRIVATE merci_engine word_scape)

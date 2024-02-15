@@ -23,6 +23,6 @@ static const char* __get_next_module_str(void* _obj, int _index) {
     return NULL;
 }
 
-const char* mrc_engine_get_modules_names(mrc_engine_t* eng) {
+inline const char* mrc_engine_get_modules_names(mrc_engine_t* eng) {
     return mrc_construct_str_from_list(eng, &__get_next_module_str);
 }

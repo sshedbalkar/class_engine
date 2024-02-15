@@ -10,8 +10,14 @@ All rights reserved
 static mrc_obj_static_t __base = {MRC_GRAPHICS_UI, (mrc_fn_vp_v_t)&mrc_ui_ctor,
                                   (mrc_fn_i_vp_t)&mrc_ui_dtor};
 
-void mrc_ui_init(mrc_ui_t* obj) { mrc_print("mrc_ui_init"); }
-void mrc_ui_test1(mrc_ui_t* obj) { mrc_print("mrc_ui_test1"); }
+void mrc_ui_init(mrc_ui_t* obj) {
+    (void)obj;
+    mrc_print("mrc_ui_init");
+}
+void mrc_ui_test1(mrc_ui_t* obj) {
+    (void)obj;
+    mrc_print("mrc_ui_test1");
+}
 
 mrc_obj_static_t* mrc_ui_static_init() { return &__base; }
 

@@ -12,12 +12,15 @@ static mrc_obj_static_t __base = {MRC_GRAPHICS,
                                   (mrc_fn_vp_v_t)&mrc_graphics_ctor,
                                   (mrc_fn_i_vp_t)&mrc_graphics_dtor};
 
-void mrc_graphics_init(mrc_graphics_t* obj) { SDL_Init(SDL_INIT_VIDEO); }
 void mrc_graphics_test1(mrc_graphics_t* obj) {
+    (void)obj;
     mrc_print("mrc_graphics_test1");
 }
 
-mrc_obj_static_t* mrc_graphics_static_init() { return &__base; }
+mrc_obj_static_t* mrc_graphics_static_init() {
+    SDL_Init(SDL_INIT_VIDEO);
+    return &__base;
+}
 
 static mrc_graphics_t* __create() {
     return (mrc_graphics_t*)mrc_alloc(sizeof(mrc_graphics_t));

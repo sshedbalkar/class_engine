@@ -9,6 +9,8 @@ All rights reserved
 #include "mrc_console.h"
 
 static int parse_opt(int key, char* arg, struct argp_state* state) {
+    (void)arg;
+    (void)state;
     switch (key) {
         case 800:
             mrc_print("mrc_graphics option: 800");

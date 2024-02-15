@@ -6,14 +6,12 @@
  * File: main.c
  */
 
-#include <SDL2/SDL.h>
 #include "ws_main.h"
 #include "ws_terminal_ui.h"
 #include "mrc_console.h"
 
 int main(int argc, char* argv[]) {
     mrc_print("Hello WordScape2\n");
-    SDL_Init(SDL_INIT_VIDEO);
     //
     ws_app_t* app = ws_app_ctor();
     if (ws_parse_args(argc, argv, app) == 0) {

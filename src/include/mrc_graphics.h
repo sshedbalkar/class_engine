@@ -13,7 +13,6 @@ typedef struct {
     mrc_obj_static_t* base;
 } mrc_graphics_t;
 
-extern void mrc_graphics_init(mrc_graphics_t* obj);
 extern void mrc_graphics_test1(mrc_graphics_t* obj);
 
 extern mrc_obj_static_t* mrc_graphics_static_init();
