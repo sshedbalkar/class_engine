@@ -24,6 +24,8 @@ int mrc_print(const char* format, ...) {
 
 mrc_obj_static_t* mrc_console_static_init() { return &__base; }
 
+int mrc_console_static_term() { return 0; }
+
 static mrc_console_t* __create() {
     return (mrc_console_t*)mrc_alloc(sizeof(mrc_console_t));
 }

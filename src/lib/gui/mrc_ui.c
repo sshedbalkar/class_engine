@@ -21,6 +21,8 @@ void mrc_ui_test1(mrc_ui_t* obj) {
 
 mrc_obj_static_t* mrc_ui_static_init() { return &__base; }
 
+int mrc_ui_static_term() { return 0; }
+
 static mrc_ui_t* __create() { return (mrc_ui_t*)mrc_alloc(sizeof(mrc_ui_t)); }
 
 mrc_ui_t* mrc_ui_ctor() {

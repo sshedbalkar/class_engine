@@ -23,6 +23,8 @@ typedef struct mrc_engine_t {
 
 extern mrc_obj_static_t* mrc_engine_static_init();
 
+extern int mrc_engine_static_term();
+
 extern void mrc_engine_static_register_module_type(mrc_obj_static_t* tHandler);
 
 extern mrc_engine_t* mrc_engine_ctor();

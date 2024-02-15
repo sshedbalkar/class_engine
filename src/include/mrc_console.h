@@ -18,6 +18,8 @@ extern int mrc_print(const char* format, ...);
 
 extern mrc_obj_static_t* mrc_console_static_init();
 
+extern int mrc_console_static_term();
+
 extern mrc_console_t* mrc_console_ctor();
 
 extern int mrc_console_dtor(mrc_console_t* obj);

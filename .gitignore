@@ -34,3 +34,6 @@
 # Build and Binary directories
 bin/
 build/
+
+# VSCode databases
+*.vc.db*

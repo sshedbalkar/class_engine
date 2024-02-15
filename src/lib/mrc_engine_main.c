@@ -45,6 +45,12 @@ mrc_obj_static_t* mrc_engine_static_init() {
     return &__base;
 }
 
+int mrc_engine_static_term() {
+    mrc_ui_static_term();
+    mrc_graphics_static_term();
+    mrc_console_static_term();
+    return 0;
+}
 void mrc_engine_static_register_module_type(mrc_obj_static_t* tHandler) {
     mrc_vector_set(&__modules_map, tHandler->type, tHandler);
 }

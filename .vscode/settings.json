@@ -44,6 +44,8 @@
         "mrc_types.h": "c",
         "mrc_ui.h": "c",
         "mrc_utils.h": "c",
-        "mrc_graphics.h": "c"
+        "mrc_graphics.h": "c",
+        "mrc_console.h": "c",
+        "mrc_memory.h": "c"
     }
 }

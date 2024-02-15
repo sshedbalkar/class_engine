@@ -16,6 +16,7 @@ set(SourceFiles
 )
 
 find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} ${SourceFiles})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)

@@ -15,6 +15,7 @@ static ws_app_t* __create() {
 }
 
 static void __do_static_init() { mrc_engine_static_init(); }
+static void __do_static_term() { mrc_engine_static_term(); }
 
 ws_app_t* ws_app_ctor() {
     __do_static_init();
@@ -29,5 +30,6 @@ ws_app_t* ws_app_ctor() {
 int ws_app_dtor(ws_app_t* app) {
     mrc_engine_dtor(app->engine);
     mrc_free(app);
+    __do_static_term();
     return 0;
 }

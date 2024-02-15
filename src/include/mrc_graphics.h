@@ -8,14 +8,20 @@ All rights reserved
 
 #include "mrc_types.h"
 
+struct SDL_Window;
+typedef struct SDL_Window SDL_Window;
+
 typedef struct {
     // Has to be the first property
     mrc_obj_static_t* base;
+    SDL_Window* window;
 } mrc_graphics_t;
 
 extern void mrc_graphics_test1(mrc_graphics_t* obj);
 
 extern mrc_obj_static_t* mrc_graphics_static_init();
+
+extern int mrc_graphics_static_term();
 
 extern mrc_graphics_t* mrc_graphics_ctor();
 

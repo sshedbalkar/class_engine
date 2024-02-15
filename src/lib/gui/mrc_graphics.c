@@ -18,8 +18,15 @@ void mrc_graphics_test1(mrc_graphics_t* obj) {
 }
 
 mrc_obj_static_t* mrc_graphics_static_init() {
-    SDL_Init(SDL_INIT_VIDEO);
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        mrc_print("SDL init error: %s\n", SDL_GetError());
+    }
     return &__base;
+}
+
+int mrc_graphics_static_term() {
+    SDL_Quit();
+    return 0;
 }
 
 static mrc_graphics_t* __create() {
@@ -29,10 +36,15 @@ static mrc_graphics_t* __create() {
 mrc_graphics_t* mrc_graphics_ctor() {
     mrc_graphics_t* obj = __create();
     obj->base = &__base;
+    SDL_Window* window =
+        SDL_CreateWindow("Window 1", 0, 0, 600, 480, SDL_WINDOW_SHOWN);
+    obj->window = window;
+    SDL_Delay(5000);
     return obj;
 }
 
 int mrc_graphics_dtor(mrc_graphics_t* obj) {
+    SDL_DestroyWindow(obj->window);
     mrc_free(obj);
     return 0;
 }
