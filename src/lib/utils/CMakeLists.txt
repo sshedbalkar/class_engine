@@ -11,6 +11,7 @@ add_compile_options(
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/mrc_utils.c
     ${PROJECT_SOURCE_DIR}/mrc_enums_to_string.c
+    ${PROJECT_SOURCE_DIR}/mrc_engine_utils.c
 )
 
 add_library(${PROJECT_NAME} ${SourceFiles})

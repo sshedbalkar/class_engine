@@ -12,6 +12,7 @@
         {"pkg-config":"1.8.1"}
     ],
     "optional":[
-        {"ubuntu": "Ubuntu 23.04"}
+        {"ubuntu": "Ubuntu 23.04"},
+        {"coredumpctl": "249.11-0ubuntu3.12"}
     ]
 }

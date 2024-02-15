@@ -11,20 +11,16 @@
 #include "mrc_engine_terminal_ui.h"
 #include "mrc_graphics_terminal_ui_p.h"
 #include "mrc_console.h"
+#include "mrc_engine_utils.h"
 
 static int parse_opt(int key, char* arg, struct argp_state* state) {
     mrc_engine_t* eng = state->input;
+    (void)arg;
     switch (key) {
         case 'e':
-            int i, total = mrc_vector_total(&eng->modules);
-            mrc_print("Current modules in the engine: %d\n", total);
-            for (i = 0; i < total; ++i) {
-                mrc_print(
-                    "%s, ",
-                    mrc_module_type_t_to_string(
-                        (*(mrc_obj_static_t**)mrc_vector_get(&eng->modules, i))
-                            ->type));
-            }
+            mrc_print("Current modules in the engine: %d\n",
+                      mrc_vector_total(&eng->modules));
+            mrc_print("%s", mrc_engine_get_modules_names(eng));
             mrc_print("\n");
             break;
         case 501:

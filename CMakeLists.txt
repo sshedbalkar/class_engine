@@ -41,6 +41,14 @@ project(Test2
     VERSION ${VERSION_STRING}
 )
 
+add_compile_options(
+    $<$<CONFIG:Debug>:-Wall>
+    $<$<CONFIG:Debug>:-Wextra>
+    # To get rid of warning: missing initializer for field ‘x’ of ‘struct y’ [-Wmissing-field-initializers]
+    $<$<CONFIG:Debug>:-Wno-missing-field-initializers> 
+    
+)
+
 find_package(SDL2 REQUIRED)
 include_directories(src/include)
 include_directories(src/app)

@@ -9,8 +9,8 @@ All rights reserved
 
 #ifndef NULL
 #define NULL 0
-#define NULL_STR "\0"
 #endif
+#define NULL_STR '\0'
 
 #ifdef __cplusplus
 #define EXTERNC extern "C"
@@ -18,4 +18,5 @@ All rights reserved
 #define EXTERNC
 #endif
 
+#define MRC_DEFAULT_STR_BUFF_SIZE 1024
 #endif    // __MRC_DEFINES_H

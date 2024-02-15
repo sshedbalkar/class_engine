@@ -15,7 +15,7 @@
 
 #define MRC_ENGINE_DEFAULT_MODULE_COUNT 8
 
-typedef struct {
+typedef struct mrc_engine_t {
     // Has to be the first property
     mrc_obj_static_t* base;
     mrc_vector_t modules;

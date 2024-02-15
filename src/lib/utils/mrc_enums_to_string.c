@@ -10,8 +10,8 @@
 #include "mrc_types.h"
 
 static const char* __mrc_module_type_t_strings[] = {
-    "MRC_ENGINE",  "MRC_GLUE",     "MRC_CORE",
-    "MRC_CONSOLE", "MRC_GRAPHICS", "MRC_GRAPHICS_UI"};
+    "\"MRC_ENGINE\"",  "\"MRC_GLUE\"",     "\"MRC_CORE\"",
+    "\"MRC_CONSOLE\"", "\"MRC_GRAPHICS\"", "\"MRC_GRAPHICS_UI\""};
 
 const char* mrc_module_type_t_to_string(mrc_module_type_t val) {
     if (val < MRC_MODULES_COUNT) return __mrc_module_type_t_strings[val];

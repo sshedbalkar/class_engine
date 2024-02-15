@@ -1,10 +1,11 @@
-/*
-Copyright (c) Santosh Shedbalkar
-Year: 2024 - 2024
-All rights reserved
+/**
+ * Copyright (c) Santosh Shedbalkar
+ * Year: 2024 - 2024
+ * All rights reserved
+ *
+ * File: mrc_vector.c
+ */
 
-File: mrc_vector.c
-*/
 #include "mrc_vector.h"
 #include "mrc_memory.h"
 #include "mrc_console.h"
@@ -23,6 +24,8 @@ void mrc_vector_init_capacity(mrc_vector_t *v, size_t capacity) {
 }
 
 int mrc_vector_total(mrc_vector_t *v) { return v->length; }
+
+int mrc_vector_capacity(mrc_vector_t *v) { return v->capacity; }
 
 static void mrc_vector_resize(mrc_vector_t *v, size_t capacity) {
 #ifdef DEBUG_ON

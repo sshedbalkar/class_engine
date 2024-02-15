@@ -77,7 +77,7 @@ int mrc_engine_add_module(mrc_engine_t* eng, mrc_module_type_t type) {
 }
 
 int mrc_engine_remove_module(mrc_engine_t* eng, mrc_module_type_t type) {
-    int i, t = mrc_vector_total(&eng->modules), count = 0, found = 0;
+    int i, t, count = 0, found = 0;
     mrc_obj_static_t** pmod;
     do {
         found = 0;
@@ -107,4 +107,9 @@ mrc_obj_static_t* mrc_engine_get_module(mrc_engine_t* eng,
     return NULL;
 }
 
-int mrc_parse_args(mrc_engine_t* eng, int argc, char** argv) { return 0; }
+int mrc_parse_args(mrc_engine_t* eng, int argc, char** argv) {
+    (void)eng;
+    (void)argc;
+    (void)argv;
+    return 0;
+}
