@@ -18,7 +18,8 @@ static mrc_obj_static_t __base = {MRC_GRAPHICS,
                                   (mrc_fn_i_vp_t)&mrc_graphics_dtor};
 
 static mrc_graphics_t* __create() {
-    return (mrc_graphics_t*)mrc_alloc(sizeof(mrc_graphics_t));
+    mrc_graphics_t* app = (mrc_graphics_t*)mrc_alloc(sizeof(mrc_graphics_t));
+    return app;
 }
 
 static void __on_enter_frame() {
@@ -26,6 +27,7 @@ static void __on_enter_frame() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
+            mrc_print("Quit window\n");
         }
     }
 }

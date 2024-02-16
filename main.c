@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     }
     ws_app_run(app);
     ws_app_dtor(app);
+    mrc_print("QUIT\n");
     //
     return 0;
 }
