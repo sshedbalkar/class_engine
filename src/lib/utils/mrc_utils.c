@@ -10,7 +10,7 @@ File: mrc_utils.c
 #include "mrc_utils.h"
 #include "mrc_console.h"
 
-static unsigned int __id = 0;
+unsigned int __id = 0;
 static char __str_buffer[MRC_DEFAULT_STR_BUFF_SIZE];
 
 inline unsigned int mrc_util_get_unique_id() { return __id++; }

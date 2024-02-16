@@ -10,14 +10,19 @@
 #include "mrc_memory.h"
 #include "mrc_vector.h"
 #include "mrc_events.h"
+#include "mrc_list_core_events.h"
+#include "mrc_utils.h"
+#include "mrc_console.h"
 
 static mrc_vector_t __events_map;
 
 static void __unreg_event(mrc_vector_t* _vec, unsigned int _index,
                           void* _param) {
     (void)_param;
+    if (_vec == NULL) return;
     mrc_vector_t* _cbs = (mrc_vector_t*)mrc_vector_get(_vec, _index);
     if (_cbs != NULL) {
+        mrc_print("Unreg event: %d\n", _index);
         mrc_vector_free(_cbs);
         mrc_free(_cbs);
         mrc_vector_set(_vec, _index, NULL);
@@ -35,7 +40,7 @@ static inline void __trigger_callback(mrc_fn_v_v_t _cb, unsigned int _index,
                                       void* _param) {
     (void)_index;
     (void)_param;
-    _cb();
+    if (_cb != NULL) _cb();
 }
 
 void mrc_events_static_init() {
@@ -52,6 +57,7 @@ int mrc_events_reg_callback(unsigned int _evt, mrc_fn_v_v_t _cb) {
     mrc_vector_t* _cbs = (mrc_vector_t*)mrc_vector_get(&__events_map, _evt);
     if (_cbs == NULL) {
         _cbs = mrc_alloc(sizeof(mrc_vector_t));
+        mrc_print("Registering Evt: %d\n", _evt);
         mrc_vector_init_capacity(_cbs, MRC_EVENTS_CALLBACKS_PER_EVENT_COUNT);
         mrc_vector_set(&__events_map, _evt, _cbs);
     }

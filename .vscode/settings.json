@@ -46,6 +46,9 @@
         "mrc_utils.h": "c",
         "mrc_graphics.h": "c",
         "mrc_console.h": "c",
-        "mrc_memory.h": "c"
+        "mrc_memory.h": "c",
+        "stdlib.h": "c",
+        "time.h": "c",
+        "mrc_timer.h": "c"
     }
 }

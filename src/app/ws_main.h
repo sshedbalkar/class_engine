@@ -16,5 +16,6 @@ typedef struct {
 
 extern ws_app_t* ws_app_ctor();
 extern int ws_app_dtor(ws_app_t* app);
+extern void ws_app_run(ws_app_t* app);
 
 #endif    // __WS_MAIN_H

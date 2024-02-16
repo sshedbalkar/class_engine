@@ -33,3 +33,5 @@ int ws_app_dtor(ws_app_t* app) {
     __do_static_term();
     return 0;
 }
+
+void ws_app_run(ws_app_t* app) { mrc_engine_run(app->engine); }

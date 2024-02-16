@@ -40,4 +40,6 @@ extern mrc_obj_static_t* mrc_engine_get_module(mrc_engine_t* eng,
 
 extern int mrc_parse_args(mrc_engine_t* eng, int argc, char** argv);
 
+extern int mrc_engine_run(mrc_engine_t* eng);
+
 #endif    // __MRC_ENGINE_MAIN_H

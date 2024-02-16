@@ -12,6 +12,7 @@
 #include "mrc_events.h"
 #include "mrc_graphics.h"
 #include "mrc_ui.h"
+#include "mrc_timer.h"
 
 static mrc_obj_static_t __base = {MRC_ENGINE, (mrc_fn_vp_v_t)&mrc_engine_ctor,
                                   (mrc_fn_i_vp_t)&mrc_engine_dtor};
@@ -35,6 +36,7 @@ static void __remove_all_modules(mrc_engine_t* eng) {
 mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_init_capacity(&__modules_map, MRC_ENGINE_DEFAULT_MODULE_COUNT);
     mrc_vector_set(&__modules_map, MRC_ENGINE, &__base);
+    mrc_timer_static_init();
     // MRC_GLUE,
     mrc_events_static_init();
     // MRC_CORE,
@@ -52,6 +54,7 @@ int mrc_engine_static_term() {
     mrc_graphics_static_term();
     mrc_console_static_term();
     mrc_events_static_term();
+    mrc_timer_static_term();
     mrc_vector_free(&__modules_map);
     return 0;
 }
@@ -121,5 +124,11 @@ int mrc_parse_args(mrc_engine_t* eng, int argc, char** argv) {
     (void)eng;
     (void)argc;
     (void)argv;
+    return 0;
+}
+
+int mrc_engine_run(mrc_engine_t* eng) {
+    (void)eng;
+    mrc_timer_run();
     return 0;
 }

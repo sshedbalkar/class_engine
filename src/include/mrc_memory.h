@@ -8,8 +8,9 @@ All rights reserved
 
 #include <stddef.h>
 
-void* mrc_alloc(size_t size);
-void mrc_free(void* ptr);
-void* mrc_realloc(void* ptr, size_t new_size);
+extern void* mrc_alloc(size_t size);
+extern void mrc_free(void* ptr);
+extern void* mrc_realloc(void* ptr, size_t new_size);
+extern void* mrc_memset(void* dest, int ch, size_t count);
 
 #endif    // __MRC_MEMORY_H

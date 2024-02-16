@@ -20,7 +20,10 @@ void mrc_vector_init_capacity(mrc_vector_t *v, size_t capacity) {
     v->capacity = capacity;
     v->length = 0;
     if (capacity < 1) return;
-    v->items = mrc_alloc(sizeof(void *) * v->capacity);
+    size_t _sz = sizeof(void *) * v->capacity;
+    v->items = mrc_alloc(_sz);
+    mrc_print("mrc_vector_init_capacity: %p\n", v->items);
+    mrc_memset(v->items, 0, _sz);
 }
 
 int mrc_vector_total(mrc_vector_t *v) { return v->length; }
@@ -84,6 +87,7 @@ void mrc_vector_delete(mrc_vector_t *v, unsigned int index) {
 }
 
 void mrc_vector_free(mrc_vector_t *v) {
+    mrc_print("mrc_vector_free: %p\n", v->items);
     mrc_free(v->items);
     v->length = 0;
     v->capacity = 0;

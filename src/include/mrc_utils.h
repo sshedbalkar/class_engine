@@ -13,4 +13,6 @@ File: mrc_utils.h
 extern unsigned int mrc_util_get_unique_id();
 extern const char* mrc_construct_str_from_list(void* obj, mrc_fn_ccp_vp_i_t fn);
 
+extern unsigned int __id;
+
 #endif    // __MRC_UTILS_H

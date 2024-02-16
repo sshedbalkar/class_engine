@@ -13,6 +13,7 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/mrc_memory.c
     ${PROJECT_SOURCE_DIR}/mrc_modules.c
     ${PROJECT_SOURCE_DIR}/mrc_events.c
+    ${PROJECT_SOURCE_DIR}/mrc_timer.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})
