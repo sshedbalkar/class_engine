@@ -27,7 +27,7 @@ static void __on_enter_frame() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            mrc_print("Quit window\n");
+            mrc_events_trigger_event(MRC_EVT_QUIT);
         }
     }
 }

@@ -19,6 +19,7 @@ extern void mrc_timer_run();
 extern void mrc_timer_pause();
 extern void mrc_timer_resume();
 extern void mrc_timer_toggle();
+extern void mrc_timer_stop();
 extern timespec mrc_timer_time();
 extern timespec mrc_timer_diff(const timespec start, const timespec end);
 extern void mrc_timer_set_fps(unsigned int fps);

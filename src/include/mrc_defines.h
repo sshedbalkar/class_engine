@@ -24,4 +24,5 @@ All rights reserved
            // or equal, try to be conservative with the estimate
 #define MRC_EVENTS_CALLBACKS_PER_EVENT_COUNT 2
 #define MRC_DESIRED_FPS 60
+#define MRC_DATA_INSTANCES_ESTIMATE 256
 #endif    // __MRC_DEFINES_H

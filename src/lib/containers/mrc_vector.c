@@ -41,18 +41,26 @@ static void mrc_vector_resize(mrc_vector_t *v, size_t capacity) {
     }
 }
 
-void mrc_vector_add(mrc_vector_t *v, void *item) {
+unsigned int mrc_vector_add(mrc_vector_t *v, void *item) {
     if (v->capacity == v->length) {
         if (v->capacity == 0) v->capacity = 1;
         mrc_vector_resize(v, v->capacity * 2);
     }
     v->items[v->length++] = item;
+    return v->length;
 }
 
 void mrc_vector_set(mrc_vector_t *v, unsigned int index, void *item) {
     if (index < v->capacity) {
         v->items[index] = item;
         ++v->length;
+    }
+}
+
+void mrc_vector_unset(mrc_vector_t *v, unsigned int index) {
+    if (index < v->capacity) {
+        v->items[index] = NULL;
+        --v->length;
     }
 }
 

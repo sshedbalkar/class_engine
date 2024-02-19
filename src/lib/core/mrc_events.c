@@ -22,13 +22,13 @@ static void __unreg_event(mrc_vector_t* _cbs, unsigned int _index,
     if (_cbs == NULL) return;
     mrc_vector_free(_cbs);
     mrc_free(_cbs);
-    mrc_vector_set(&__events_map, _index, NULL);
+    mrc_vector_unset(&__events_map, _index);
 }
 
 static inline void __unreg_callback(mrc_fn_v_v_t _cb2, unsigned int _index,
                                     mrc_fn_v_v_t _cb1) {
     if (_cb1 == _cb2) {
-        mrc_vector_set(&__events_map, _index, NULL);
+        mrc_vector_unset(&__events_map, _index);
     }
 }
 

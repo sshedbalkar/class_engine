@@ -93,7 +93,7 @@ static void __get_time(timespec* ts) {
     }
 }
 
-static unsigned int _count = 0;
+// static unsigned int _count = 0;
 
 static void __timer_loop() {
     while (__timer_data.run_frames) {
@@ -110,18 +110,18 @@ static void __timer_loop() {
                 __timer_data.last_time.tv_nsec = __timer_data.now.tv_nsec;
                 // Dispatch timer events
                 mrc_events_trigger_event(MRC_EVT_TIMER);
-                ++_count;
-                mrc_print("TEVENT: %d, Timer: %3jd.%10ld\n", _count,
-                          diff.tv_sec, diff.tv_nsec);
-                if (_count % 5 == 0) {
-                    const timespec diff2 =
-                        mrc_timer_diff(__timer_data.t0, __timer_data.now);
-                    mrc_print("Elapsed: F: %d, T: %2jd.%09ld\n", _count,
-                              diff2.tv_sec, diff2.tv_nsec);
-                    if (_count >= 5) {
-                        __timer_data.run_frames = 0;
-                    }
-                }
+                // ++_count;
+                // mrc_print("TEVENT: %d, Timer: %3jd.%10ld\n", _count,
+                //           diff.tv_sec, diff.tv_nsec);
+                // if (_count % 5 == 0) {
+                //     const timespec diff2 =
+                //         mrc_timer_diff(__timer_data.t0, __timer_data.now);
+                //     mrc_print("Elapsed: F: %d, T: %2jd.%09ld\n", _count,
+                //               diff2.tv_sec, diff2.tv_nsec);
+                //     if (_count >= 5) {
+                //         __timer_data.run_frames = 0;
+                //     }
+                // }
             }
         }
         //  Dispatch frame events
@@ -134,7 +134,9 @@ void mrc_timer_static_init() {
     mrc_timer_set_fps(MRC_DESIRED_FPS);
 }
 
-void mrc_timer_static_term() {
+void mrc_timer_static_term() {}
+
+void mrc_timer_static_stop() {
     __timer_data.run_frames = 0;
     __timer_data.run = 0;
 }

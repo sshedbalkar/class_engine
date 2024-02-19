@@ -13,6 +13,7 @@ typedef enum {
     MRC_EVT_FRAME_ENTER = 0,
     MRC_EVT_TIMER,
     MRC_EVT_QUIT_WINDOW,
+    MRC_EVT_QUIT,
     //
     MRC_EVT_MAX
 } mrc_events_t;

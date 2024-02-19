@@ -9,7 +9,9 @@
 #include "mrc_engine_main.h"
 #include "mrc_memory.h"
 #include "mrc_console.h"
+#include "mrc_data_container.h"
 #include "mrc_events.h"
+#include "mrc_list_core_events.h"
 #include "mrc_graphics.h"
 #include "mrc_ui.h"
 #include "mrc_timer.h"
@@ -33,9 +35,12 @@ static void __remove_all_modules(mrc_engine_t* eng) {
     }
 }
 
+static void __on_event_quit() { mrc_timer_static_stop(); }
+
 mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_init_capacity(&__modules_map, MRC_ENGINE_DEFAULT_MODULE_COUNT);
     mrc_vector_set(&__modules_map, MRC_ENGINE, &__base);
+    mrc_data_container_static_init();
     mrc_timer_static_init();
     // MRC_GLUE,
     mrc_events_static_init();
@@ -46,6 +51,7 @@ mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_set(&__modules_map, MRC_GRAPHICS, mrc_graphics_static_init());
     // MRC_GRAPHICS_UI
     mrc_vector_set(&__modules_map, MRC_GRAPHICS_UI, mrc_ui_static_init());
+    mrc_events_reg_callback(MRC_EVT_QUIT, &__on_event_quit);
     return &__base;
 }
 
@@ -55,6 +61,7 @@ int mrc_engine_static_term() {
     mrc_console_static_term();
     mrc_events_static_term();
     mrc_timer_static_term();
+    mrc_data_container_static_term();
     mrc_vector_free(&__modules_map);
     return 0;
 }
