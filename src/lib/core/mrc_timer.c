@@ -136,7 +136,7 @@ void mrc_timer_static_init() {
 
 void mrc_timer_static_term() {}
 
-void mrc_timer_static_stop() {
+void mrc_timer_stop() {
     __timer_data.run_frames = 0;
     __timer_data.run = 0;
 }

@@ -35,7 +35,7 @@ static void __remove_all_modules(mrc_engine_t* eng) {
     }
 }
 
-static void __on_event_quit() { mrc_timer_static_stop(); }
+static void __on_event_quit() { mrc_timer_stop(); }
 
 mrc_obj_static_t* mrc_engine_static_init() {
     mrc_vector_init_capacity(&__modules_map, MRC_ENGINE_DEFAULT_MODULE_COUNT);
