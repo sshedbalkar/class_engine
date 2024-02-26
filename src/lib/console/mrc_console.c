@@ -13,7 +13,7 @@ All rights reserved
 static mrc_obj_static_t __base = {MRC_CONSOLE, (mrc_fn_vp_v_t)&mrc_console_ctor,
                                   (mrc_fn_i_vp_t)&mrc_console_dtor};
 
-int mrc_print(const char* format, ...) {
+DECLSPEC int MRCCALL mrc_print(const char* format, ...) {
     int result;
     va_list args;
     va_start(args, format);

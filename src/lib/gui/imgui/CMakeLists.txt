@@ -20,7 +20,7 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/imgui_draw.cpp
     ${PROJECT_SOURCE_DIR}/imgui_tables.cpp
     ${PROJECT_SOURCE_DIR}/imgui_widgets.cpp
-    ${PROJECT_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
+    ${PROJECT_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
     ${PROJECT_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
 )
 

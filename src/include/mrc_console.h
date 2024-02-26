@@ -8,13 +8,14 @@ All rights reserved
 #define __MRC_CONSOLE_H
 
 #include "mrc_types.h"
+#include "mrc_defines.h"
 
 typedef struct {
     // Has to be the first property
     mrc_obj_static_t* base;
 } mrc_console_t;
 
-extern int mrc_print(const char* format, ...);
+extern DECLSPEC int MRCCALL mrc_print(const char* format, ...);
 
 extern mrc_obj_static_t* mrc_console_static_init();
 

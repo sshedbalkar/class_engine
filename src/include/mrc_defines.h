@@ -18,6 +18,43 @@ All rights reserved
 #define EXTERNC
 #endif
 
+/* Some compilers use a special export keyword */
+#ifndef DECLSPEC
+#if defined(__WIN32__) || defined(__WINRT__) || defined(__CYGWIN__)
+#ifdef DLL_EXPORT
+#define DECLSPEC __declspec(dllexport)
+#else
+#define DECLSPEC
+#endif
+#elif defined(__OS2__)
+#ifdef BUILD_SDL
+#define DECLSPEC __declspec(dllexport)
+#else
+#define DECLSPEC
+#endif
+#else
+#if defined(__GNUC__) && __GNUC__ >= 4
+#define DECLSPEC __attribute__((visibility("default")))
+#else
+#define DECLSPEC
+#endif
+#endif
+#endif
+
+/* By default MRC uses the C calling convention */
+#ifndef MRCCALL
+#if (defined(__WIN32__) || defined(__WINRT__)) && !defined(__GNUC__)
+#define SDLCALL __cdecl
+#elif defined(__OS2__) || defined(__EMX__)
+#define MRCCALL _System
+#if defined(__GNUC__) && !defined(_System)
+#define _System /* for old EMX/GCC compat.  */
+#endif
+#else
+#define MRCCALL
+#endif
+#endif /* MRCCALL */
+
 #define MRC_DEFAULT_STR_BUFF_SIZE 1024
 #define MRC_EVENTS_COUNT_MAX \
     256    // Max number of events in the app (approx), should be greater than

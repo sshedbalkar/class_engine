@@ -24,12 +24,19 @@ static mrc_graphics_t* __create() {
 
 static void __on_enter_frame() {
     // mrc_print("GR Enter frame\n");
-    SDL_Event event;
+    /*    SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             mrc_events_trigger_event(MRC_EVT_QUIT);
         }
     }
+    */
+    /*
+       if (event.type == SDL_WINDOWEVENT &&
+                event.window.event == SDL_WINDOWEVENT_CLOSE &&
+                event.window.windowID == SDL_GetWindowID(__window))
+                mrc_events_trigger_event(MRC_EVT_QUIT);
+                */
 }
 
 void mrc_graphics_test1(mrc_graphics_t* obj) {
