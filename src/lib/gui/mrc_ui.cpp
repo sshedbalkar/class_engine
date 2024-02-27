@@ -147,6 +147,8 @@ static void __on_enter_frame() {
 
     // Rendering
     ImGui::Render();
+    ImGui::UpdatePlatformWindows();
+    ImGui::RenderPlatformWindowsDefault();
     SDL_RenderSetScale(__graphics->renderer, io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
     SDL_SetRenderDrawColor(__graphics->renderer, (Uint8)(__clear_color.x * 255),
@@ -178,7 +180,8 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
         ImGuiConfigFlags_NavEnableKeyboard;    // Enable Keyboard Controls
     io.ConfigFlags |=
         ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |=
+        ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -199,6 +202,7 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
     ImFont* font = io.Fonts->AddFontFromFileTTF(
         "imgui/misc/fonts/FiraCode-Regular.ttf", 14.0f);
     io.FontDefault = font;
+    io.ConfigDockingTransparentPayload = true;
     // ImFont* font =
     // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f,
     // nullptr, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
