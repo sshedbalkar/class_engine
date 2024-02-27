@@ -27,4 +27,6 @@ extern mrc_graphics_t* mrc_graphics_ctor();
 
 extern int mrc_graphics_dtor(mrc_graphics_t* obj);
 
+extern unsigned int MRC_ID_SDL_EVT_OBJ;
+
 #endif    // __MRC_GRAPHICS_H

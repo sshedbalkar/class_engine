@@ -14,6 +14,8 @@ extern "C" {
 #include "mrc_memory.h"
 #include "mrc_events.h"
 #include "mrc_list_core_events.h"
+#include "mrc_data_container.h"
+#include "mrc_graphics.h"
 }
 
 #include "imgui.h"
@@ -33,6 +35,7 @@ static SDL_Window* __window;
 static SDL_Renderer* __renderer;
 static mrc_ui_t* __ui;
 static ImVec4 __clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+static SDL_Event* __sdl_evt;
 
 EXTERNC void mrc_ui_init(mrc_ui_t* obj) { (void)obj; }
 EXTERNC void mrc_ui_test1(mrc_ui_t* obj) {
@@ -52,6 +55,17 @@ static mrc_ui_t* __create() {
     return app;
 }
 
+static void __on_sdl_event() {
+    __sdl_evt = (SDL_Event*)mrc_data_container_get(MRC_ID_SDL_EVT_OBJ);
+    ImGui_ImplSDL2_ProcessEvent(__sdl_evt);
+    if (__sdl_evt->type == SDL_WINDOWEVENT &&
+        __sdl_evt->window.event == SDL_WINDOWEVENT_CLOSE &&
+        __sdl_evt->window.windowID == SDL_GetWindowID(__window)) {
+        mrc_print("Quitttt2\n");
+        mrc_events_trigger_event(MRC_EVT_QUIT);
+    }
+}
+
 static void __on_enter_frame() {
     // Poll and handle events (inputs, window resize, etc.)
     // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
@@ -62,16 +76,22 @@ static void __on_enter_frame() {
     // data to your main application, or clear/overwrite your copy of the
     // keyboard data. Generally you may always pass all inputs to dear imgui,
     // and hide them from your application based on those two flags.
+    /*
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         ImGui_ImplSDL2_ProcessEvent(&event);
-        if (event.type == SDL_QUIT) mrc_events_trigger_event(MRC_EVT_QUIT);
+        if (event.type == SDL_QUIT) {
+            mrc_print("Quitttt1\n");
+            mrc_events_trigger_event(MRC_EVT_QUIT);
+        }
         if (event.type == SDL_WINDOWEVENT &&
             event.window.event == SDL_WINDOWEVENT_CLOSE &&
-            event.window.windowID == SDL_GetWindowID(__window))
+            event.window.windowID == SDL_GetWindowID(__window)) {
+            mrc_print("Quitttt2\n");
             mrc_events_trigger_event(MRC_EVT_QUIT);
+        }
     }
-
+    */
     ImGuiIO& io = ImGui::GetIO();
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer2_NewFrame();
@@ -228,6 +248,7 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
     __ui->show_another_window = FALSE;
     //
     mrc_events_reg_callback(MRC_EVT_FRAME_ENTER, &__on_enter_frame);
+    mrc_events_reg_callback(MRC_EVT_SDL_EVENT, &__on_sdl_event);
     return __ui;
 }
 
