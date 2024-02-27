@@ -31,11 +31,10 @@ extern "C" {
 static mrc_obj_static_t __base = {MRC_GRAPHICS_UI, (mrc_fn_vp_v_t)&mrc_ui_ctor,
                                   (mrc_fn_i_vp_t)&mrc_ui_dtor};
 
-static SDL_Window* __window;
-static SDL_Renderer* __renderer;
 static mrc_ui_t* __ui;
 static ImVec4 __clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 static SDL_Event* __sdl_evt;
+static mrc_graphics_t* __graphics;
 
 EXTERNC void mrc_ui_init(mrc_ui_t* obj) { (void)obj; }
 EXTERNC void mrc_ui_test1(mrc_ui_t* obj) {
@@ -56,17 +55,6 @@ static mrc_ui_t* __create() {
 }
 
 static void __on_sdl_event() {
-    __sdl_evt = (SDL_Event*)mrc_data_container_get(MRC_ID_SDL_EVT_OBJ);
-    ImGui_ImplSDL2_ProcessEvent(__sdl_evt);
-    if (__sdl_evt->type == SDL_WINDOWEVENT &&
-        __sdl_evt->window.event == SDL_WINDOWEVENT_CLOSE &&
-        __sdl_evt->window.windowID == SDL_GetWindowID(__window)) {
-        mrc_print("Quitttt2\n");
-        mrc_events_trigger_event(MRC_EVT_QUIT);
-    }
-}
-
-static void __on_enter_frame() {
     // Poll and handle events (inputs, window resize, etc.)
     // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
     // tell if dear imgui wants to use your inputs.
@@ -76,22 +64,17 @@ static void __on_enter_frame() {
     // data to your main application, or clear/overwrite your copy of the
     // keyboard data. Generally you may always pass all inputs to dear imgui,
     // and hide them from your application based on those two flags.
-    /*
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        if (event.type == SDL_QUIT) {
-            mrc_print("Quitttt1\n");
-            mrc_events_trigger_event(MRC_EVT_QUIT);
-        }
-        if (event.type == SDL_WINDOWEVENT &&
-            event.window.event == SDL_WINDOWEVENT_CLOSE &&
-            event.window.windowID == SDL_GetWindowID(__window)) {
-            mrc_print("Quitttt2\n");
-            mrc_events_trigger_event(MRC_EVT_QUIT);
-        }
+    __sdl_evt = (SDL_Event*)mrc_data_container_get(MRC_H_SDL_EVT_OBJ);
+    ImGui_ImplSDL2_ProcessEvent(__sdl_evt);
+    if (__sdl_evt->type == SDL_WINDOWEVENT &&
+        __sdl_evt->window.event == SDL_WINDOWEVENT_CLOSE &&
+        __sdl_evt->window.windowID == SDL_GetWindowID(__graphics->window)) {
+        mrc_print("Quitttt2\n");
+        mrc_events_trigger_event(MRC_EVT_QUIT);
     }
-    */
+}
+
+static void __on_enter_frame() {
     ImGuiIO& io = ImGui::GetIO();
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer2_NewFrame();
@@ -164,15 +147,15 @@ static void __on_enter_frame() {
 
     // Rendering
     ImGui::Render();
-    SDL_RenderSetScale(__renderer, io.DisplayFramebufferScale.x,
+    SDL_RenderSetScale(__graphics->renderer, io.DisplayFramebufferScale.x,
                        io.DisplayFramebufferScale.y);
-    SDL_SetRenderDrawColor(__renderer, (Uint8)(__clear_color.x * 255),
+    SDL_SetRenderDrawColor(__graphics->renderer, (Uint8)(__clear_color.x * 255),
                            (Uint8)(__clear_color.y * 255),
                            (Uint8)(__clear_color.z * 255),
                            (Uint8)(__clear_color.w * 255));
-    SDL_RenderClear(__renderer);
+    SDL_RenderClear(__graphics->renderer);
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-    SDL_RenderPresent(__renderer);
+    SDL_RenderPresent(__graphics->renderer);
 }
 
 EXTERNC mrc_ui_t* mrc_ui_ctor2() {
@@ -184,32 +167,9 @@ EXTERNC mrc_ui_t* mrc_ui_ctor2() {
 EXTERNC mrc_ui_t* mrc_ui_ctor() {
     __ui = __create();
     __ui->base = &__base;
-    //
-    // From 2.0.18: Enable native IME.
-#ifdef SDL_HINT_IME_SHOW_UI
-    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
-#endif
-    // Create window with SDL_Renderer graphics context
-    SDL_WindowFlags window_flags =
-        (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    __window = SDL_CreateWindow("Dear ImGui SDL2+SDL_Renderer example",
-                                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                1280, 720, window_flags);
-    if (__window == nullptr) {
-        mrc_print("Error: SDL_CreateWindow(): %s\n", SDL_GetError());
-        return NULL;
-    }
-    __renderer = SDL_CreateRenderer(
-        __window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-    if (__renderer == nullptr) {
-        SDL_Log("Error creating SDL_Renderer!");
-        return 0;
-    }
-    SDL_RendererInfo info;
-    SDL_GetRendererInfo(__renderer, &info);
-    SDL_Log("Current SDL_Renderer: %s", info.name);
 
     // Setup Dear ImGui context
+    __graphics = (mrc_graphics_t*)mrc_data_container_get(MRC_H_GRAPHICS_OBJ);
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -225,8 +185,8 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
     // ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplSDL2_InitForSDLRenderer(__window, __renderer);
-    ImGui_ImplSDLRenderer2_Init(__renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(__graphics->window, __graphics->renderer);
+    ImGui_ImplSDLRenderer2_Init(__graphics->renderer);
 
     // Fonts
     io.Fonts->AddFontDefault();
@@ -263,8 +223,6 @@ EXTERNC int mrc_ui_dtor(mrc_ui_t* obj) {
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    SDL_DestroyRenderer(__renderer);
-    SDL_DestroyWindow(__window);
     mrc_free(obj);
     __ui = nullptr;
     return 0;
