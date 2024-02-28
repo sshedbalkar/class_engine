@@ -7,6 +7,7 @@
  */
 
 #include "mrc_ui.h"
+#include <errno.h>
 
 extern "C" {
 #include <SDL2/SDL.h>
@@ -44,6 +45,28 @@ EXTERNC void mrc_ui_test1(mrc_ui_t* obj) {
 
 EXTERNC mrc_obj_static_t* mrc_ui_static_init() {
     ImGui::SetAllocatorFunctions(&mrc_alloc_c, &mrc_free_c, NULL);
+    //
+    const char* _file = "test1.json";
+    char _str_data[4096];
+
+    SDL_RWops* _io = SDL_RWFromFile(_file, "r");
+    SDL_ClearError();
+    if (_io != NULL) {
+        if (SDL_RWread(_io, _str_data, sizeof(_str_data), 1) > 0) {
+            mrc_print("Hello, \n%s\n", _str_data);
+        } else {
+            mrc_print("[ERR]: %s\n", SDL_GetError());
+        }
+        SDL_RWclose(_io);
+    }
+
+    // FILE* f = fopen(_file, "rb");
+    // if (f == NULL) {
+    //     mrc_print("Could not open %s: %s", _file, strerror(errno));
+    //     return NULL;
+    // }
+    // fgets(_str_data, sizeof(_str_data), f);
+    // mrc_print("Hello2, \n%s\n", _str_data);
     return &__base;
 }
 
@@ -81,12 +104,45 @@ static void __on_enter_frame() {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::MenuItem("Show##showmainmenu", NULL,
+                            &__ui->show_menu_main)) {
+        }
+        if (__ui->show_menu_main) {
+            if (ImGui::BeginMenu("File")) {
+                if (ImGui::MenuItem("Quit", "Alt+F4")) {
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Edit")) {
+                if (ImGui::MenuItem("Undo", "CTRL+Z")) {
+                }
+                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {
+                }    // Disabled item
+                ImGui::Separator();
+                if (ImGui::MenuItem("Cut", "CTRL+X")) {
+                }
+                if (ImGui::MenuItem("Copy", "CTRL+C")) {
+                }
+                if (ImGui::MenuItem("Paste", "CTRL+V")) {
+                }
+                ImGui::EndMenu();
+            }
+        }
+        ImGui::EndMainMenuBar();
+    }
+
+    if (__ui->show_win_main) {
+        ImGui::Begin("##main");
+
+        ImGui::End();
+    }
     // 1. Show the big demo window (Most of the sample code is in
     // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
     // ImGui!).
-    bool show_demo_window = (bool)__ui->show_demo_window;
-    bool show_another_window = (bool)__ui->show_another_window;
-    if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
+    // bool show_demo_window = (bool)__ui->show_demo_window;
+    // bool show_another_window = (bool)__ui->show_another_window;
+    if (__ui->show_demo_window) ImGui::ShowDemoWindow(&__ui->show_demo_window);
 
     // 2. Show a simple window that we create ourselves. We use a Begin/End pair
     // to create a named window.
@@ -101,10 +157,10 @@ static void __on_enter_frame() {
             "This is some useful text.");    // Display some text (you can use a
                                              // format strings too)
         ImGui::Checkbox("Demo Window",
-                        &show_demo_window);    // Edit bools storing our
-                                               // window open/close state
+                        &__ui->show_demo_window);    // Edit bools storing our
+                                                     // window open/close state
 
-        ImGui::Checkbox("Another Window", &show_another_window);
+        ImGui::Checkbox("Another Window", &__ui->show_another_window);
 
         ImGui::SliderFloat(
             "float", &f, 0.0f,
@@ -126,24 +182,17 @@ static void __on_enter_frame() {
     }
 
     // 3. Show another simple window.
-    if (show_another_window) {
-        ImGui::Begin("Another Window",
-                     &show_another_window);    // Pass a pointer to our bool
-                                               // variable (the window will have
-                                               // a closing button that will
-                                               // clear the bool when clicked)
+    if (__ui->show_another_window) {
+        ImGui::Begin(
+            "Another Window",
+            &__ui->show_another_window);    // Pass a pointer to our bool
+                                            // variable (the window will have
+                                            // a closing button that will
+                                            // clear the bool when clicked)
         ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me")) show_another_window = false;
+        if (ImGui::Button("Close Me")) __ui->show_another_window = false;
         ImGui::End();
     }
-    if (show_demo_window)
-        __ui->show_demo_window = TRUE;
-    else
-        __ui->show_demo_window = FALSE;
-    if (show_another_window)
-        __ui->show_another_window = TRUE;
-    else
-        __ui->show_another_window = FALSE;
 
     // Rendering
     ImGui::Render();
@@ -193,14 +242,15 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
 
     // Fonts
     io.Fonts->AddFontDefault();
-    // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/DroidSans.ttf", 14.0f);
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 14.0f);
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Cousine-Regular.ttf", 14.0f);
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Karla-Regular.ttf", 14.0f);
     io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/ProggyTiny.ttf", 14.0f);
+    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Cousine-Regular.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/DroidSans.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Karla-Regular.ttf", 14.0f);
     ImFont* font = io.Fonts->AddFontFromFileTTF(
         "imgui/misc/fonts/FiraCode-Regular.ttf", 14.0f);
+    font = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Consolas.ttf", 14.0f);
     io.FontDefault = font;
     io.ConfigDockingTransparentPayload = true;
     // ImFont* font =
@@ -208,8 +258,10 @@ EXTERNC mrc_ui_t* mrc_ui_ctor() {
     // nullptr, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
 
     // Our state
-    __ui->show_demo_window = TRUE;
-    __ui->show_another_window = FALSE;
+    __ui->show_demo_window = true;
+    __ui->show_another_window = false;
+    __ui->show_win_main = true;
+    __ui->show_menu_main = true;
     //
     mrc_events_reg_callback(MRC_EVT_FRAME_ENTER, &__on_enter_frame);
     mrc_events_reg_callback(MRC_EVT_SDL_EVENT, &__on_sdl_event);

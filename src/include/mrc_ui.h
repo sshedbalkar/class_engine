@@ -6,14 +6,17 @@ All rights reserved
 #ifndef __MRC_UI_H
 #define __MRC_UI_H
 
+#include <stdbool.h>
 #include "mrc_types.h"
 #include "mrc_defines.h"
 
 typedef struct {
     // Has to be the first property
     mrc_obj_static_t* base;
-    bool_t show_demo_window;
-    bool_t show_another_window;
+    bool show_win_main;
+    bool show_menu_main;
+    bool show_demo_window;
+    bool show_another_window;
 } mrc_ui_t;
 
 EXTERNC void mrc_ui_init(mrc_ui_t* obj);
