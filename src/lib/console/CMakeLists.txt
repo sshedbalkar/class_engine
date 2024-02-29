@@ -9,7 +9,7 @@ add_compile_options(
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/mrc_console.c
+    ${PROJECT_SOURCE_DIR}/cls_console.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})

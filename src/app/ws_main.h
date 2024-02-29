@@ -8,10 +8,10 @@
 #ifndef __WS_MAIN_H
 #define __WS_MAIN_H
 
-#include "merci_engine.h"
+#include "class_engine.h"
 
 typedef struct {
-    mrc_engine_t* engine;
+    cls_engine_t* engine;
 } ws_app_t;
 
 extern ws_app_t* ws_app_ctor();

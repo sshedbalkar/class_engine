@@ -29,9 +29,9 @@ if(MSVC)
 endif()
 
 
-# Extract version from ./src/include/mrc_version.h
+# Extract version from ./src/include/cls_version.h
 set(VERSION_REGEX "#define APP_VERSION[ \t]+\"(.+)\"")
-file(STRINGS "${CMAKE_SOURCE_DIR}/src/include/mrc_version.h"
+file(STRINGS "${CMAKE_SOURCE_DIR}/src/include/cls_version.h"
     VERSION_STRING REGEX ${VERSION_REGEX})
 string(REGEX REPLACE ${VERSION_REGEX} "\\1" VERSION_STRING "${VERSION_STRING}")
 

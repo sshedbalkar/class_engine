@@ -9,8 +9,8 @@
 #include <argp.h>
 #include "ws_main.h"
 #include "ws_terminal_ui.h"
-#include "mrc_engine_terminal_ui.h"
-#include "mrc_console.h"
+#include "cls_engine_terminal_ui.h"
+#include "cls_console.h"
 
 const char *argp_program_bug_address = PROGRAM_BUG_EMAIL_CONTACT;
 const char *argp_program_version = APP_VERSION;
@@ -18,14 +18,14 @@ const char *argp_program_version = APP_VERSION;
 static int parse_opt(int key, char *arg, struct argp_state *state) {
     (void)arg;
     ws_app_t *app = state->input;
-    //  int total = mrc_vector_total(&app->engine->modules);
-    //  mrc_print("WS Current modules in the engine: %d\n", total);
+    //  int total = cls_vector_total(&app->engine->modules);
+    //  cls_print("WS Current modules in the engine: %d\n", total);
     switch (key) {
         case 700:
-            mrc_print("WordScape Option: 700");
+            cls_print("WordScape Option: 700");
             break;
         case 701:
-            mrc_print("WordScape option: 701");
+            cls_print("WordScape option: 701");
             break;
         case ARGP_KEY_INIT:
             state->child_inputs[0] = app->engine;

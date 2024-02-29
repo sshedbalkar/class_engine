@@ -13,17 +13,17 @@ set(SubProjects
     gui
 )
 
-set(MRC_INCLUDE_DIRS 
+set(CLS_INCLUDE_DIRS 
     "${PROJECT_SOURCE_DIR}/../include"
     "${PROJECT_SOURCE_DIR}/include"
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/mrc_engine_main.c
-    ${PROJECT_SOURCE_DIR}/mrc_engine_terminal_ui.c
+    ${PROJECT_SOURCE_DIR}/cls_engine_main.c
+    ${PROJECT_SOURCE_DIR}/cls_engine_terminal_ui.c
 )
 
-include_directories(${MRC_INCLUDE_DIRS})
+include_directories(${CLS_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} ${SourceFiles})
 

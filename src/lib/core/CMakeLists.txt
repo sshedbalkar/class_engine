@@ -10,11 +10,11 @@ add_compile_options(
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/mrc_memory.c
-    ${PROJECT_SOURCE_DIR}/mrc_modules.c
-    ${PROJECT_SOURCE_DIR}/mrc_events.c
-    ${PROJECT_SOURCE_DIR}/mrc_timer.c
-    ${PROJECT_SOURCE_DIR}/mrc_data_container.c
+    ${PROJECT_SOURCE_DIR}/cls_memory.c
+    ${PROJECT_SOURCE_DIR}/cls_modules.c
+    ${PROJECT_SOURCE_DIR}/cls_events.c
+    ${PROJECT_SOURCE_DIR}/cls_timer.c
+    ${PROJECT_SOURCE_DIR}/cls_data_container.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})

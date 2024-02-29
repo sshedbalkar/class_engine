@@ -10,7 +10,7 @@ add_compile_options(
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/mrc_vector.c
+    ${PROJECT_SOURCE_DIR}/cls_vector.c
 )
 
 add_library(${PROJECT_NAME} ${SourceFiles})

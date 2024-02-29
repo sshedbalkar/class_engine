@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mrc_memory.h"
+#include "cls_memory.h"
 
 #define MAX_DEPTH 100    // START Taken from
 // https://github.com/rustyrussell/ccan/pull/74/commits/59974ec0ce2fd302d561bb5e6310112c91da1da0
@@ -46,7 +46,7 @@
 
 /* Sadly, strdup is not portable. */
 static char *json_strdup(const char *str) {
-    char *ret = (char *)mrc_alloc(strlen(str) + 1);
+    char *ret = (char *)cls_alloc(strlen(str) + 1);
     if (ret == NULL) out_of_memory();
     strcpy(ret, str);
     return ret;
@@ -61,7 +61,7 @@ typedef struct {
 } SB;
 
 static void sb_init(SB *sb) {
-    sb->start = (char *)mrc_alloc(17);
+    sb->start = (char *)cls_alloc(17);
     if (sb->start == NULL) out_of_memory();
     sb->cur = sb->start;
     sb->end = sb->start + 16;
@@ -108,7 +108,7 @@ static char *sb_finish(SB *sb) {
     return sb->start;
 }
 
-static void sb_free(SB *sb) { mrc_free(sb->start); }
+static void sb_free(SB *sb) { cls_free(sb->start); }
 
 /*
  * Unicode helper functions
@@ -381,7 +381,7 @@ void json_delete(JsonNode *node) {
 
         switch (node->tag) {
             case JSON_STRING:
-                mrc_free(node->string_);
+                cls_free(node->string_);
                 break;
             case JSON_ARRAY:
             case JSON_OBJECT: {
@@ -395,7 +395,7 @@ void json_delete(JsonNode *node) {
             default:;
         }
 
-        mrc_free(node);
+        cls_free(node);
     }
 }
 
@@ -546,7 +546,7 @@ void json_remove_from_parent(JsonNode *node) {
         else
             parent->children.tail = node->prev;
 
-        mrc_free(node->key);
+        cls_free(node->key);
 
         node->parent = NULL;
         node->prev = node->next = NULL;
@@ -715,7 +715,7 @@ success:
     return true;
 
 failure_free_key:
-    if (out) mrc_free(key);
+    if (out) cls_free(key);
 failure:
     json_delete(ret);
     return false;

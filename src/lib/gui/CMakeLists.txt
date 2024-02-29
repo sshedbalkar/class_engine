@@ -9,10 +9,10 @@ add_compile_options(
 )
 
 set(SourceFiles 
-    ${PROJECT_SOURCE_DIR}/mrc_graphics.c
-    ${PROJECT_SOURCE_DIR}/mrc_graphics_terminal_ui.c
-    ${PROJECT_SOURCE_DIR}/mrc_ui.cpp
-    ${PROJECT_SOURCE_DIR}/mrc_ui_terminal_ui.c
+    ${PROJECT_SOURCE_DIR}/cls_graphics.c
+    ${PROJECT_SOURCE_DIR}/cls_graphics_terminal_ui.c
+    ${PROJECT_SOURCE_DIR}/cls_ui.cpp
+    ${PROJECT_SOURCE_DIR}/cls_ui_terminal_ui.c
 )
 
 find_package(SDL2 REQUIRED)
