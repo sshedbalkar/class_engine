@@ -1271,3 +1271,11 @@ bool json_check(const JsonNode *node, char errmsg[256]) {
 
 #undef problem
 }
+
+/*
+ *   AUTHOR: Santosh Shedbalkar
+ */
+bool json_isnull(JsonNode *node) { return node->tag == JSON_NULL; }
+bool json_getbool(JsonNode *node) { return node->bool_; }
+double json_getnumber(JsonNode *node) { return node->number_; }
+const char *json_getstring(JsonNode *node) { return node->string_; }

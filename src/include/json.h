@@ -124,4 +124,14 @@ void json_remove_from_parent(JsonNode *node);
  */
 bool json_check(const JsonNode *node, char errmsg[256]);
 
+/*
+ *   AUTHOR: Santosh Shedbalkar
+ */
+/*** Extraction of primitive types ***/
+
+bool json_isnull(JsonNode *node);
+bool json_getbool(JsonNode *node);
+double json_getnumber(JsonNode *node);
+const char *json_getstring(JsonNode *node);
+
 #endif
