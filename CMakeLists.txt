@@ -12,7 +12,11 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 set (OSBitness 32)
+message("OSBitness: ${CMAKE_SIZEOF_VOID_P}")
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(OSBitness 64)
+else()
+    set(CMAKE_SIZEOF_VOID_P 8)
     set(OSBitness 64)
 endif()
 
@@ -56,4 +60,9 @@ add_executable(${PROJECT_NAME} main.c)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/app)
-target_link_libraries(${PROJECT_NAME} PRIVATE merci_engine word_scape)
+target_link_libraries(${PROJECT_NAME} PRIVATE class_engine word_scape)
+
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND /bin/sh "${CMAKE_SOURCE_DIR}/scripts/linux/post_build.sh" "${FullOutputDir}"
+)

@@ -24,7 +24,7 @@ static int parse_opt(int key, char* arg, struct argp_state* state) {
             cls_print("\n");
             break;
         case 501:
-            cls_print("merci_engine option: 501");
+            cls_print("class_engine option: 501");
             break;
     }
     return 0;

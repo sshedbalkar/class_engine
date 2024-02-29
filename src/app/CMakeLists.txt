@@ -15,6 +15,6 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/../include)
 
 add_library(${PROJECT_NAME} ${SourceFiles})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE merci_engine) 
+target_link_libraries(${PROJECT_NAME} PRIVATE class_engine) 
 
 

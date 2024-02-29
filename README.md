@@ -1,2 +1,2 @@
-# merci_engine_v2
+# Class Engine
 Simple, modular 2D Game engine

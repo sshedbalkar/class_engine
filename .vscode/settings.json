@@ -1,7 +1,7 @@
 {
     "cpp_proj_configured": true,
     "files.associations": {
-        "merci_engine.h": "c",
+        "class_engine.h": "c",
         "sdl.h": "c",
         "close_code.h": "c",
         "begin_code.h": "c",

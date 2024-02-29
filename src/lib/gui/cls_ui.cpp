@@ -242,15 +242,15 @@ EXTERNC cls_ui_t* cls_ui_ctor() {
 
     // Fonts
     io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/ProggyTiny.ttf", 14.0f);
-    io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Cousine-Regular.ttf", 14.0f);
+    io.Fonts->AddFontFromFileTTF("fonts/ProggyTiny.ttf", 14.0f);
+    io.Fonts->AddFontFromFileTTF("fonts/Cousine-Regular.ttf", 14.0f);
     // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/DroidSans.ttf", 14.0f);
-    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 14.0f);
-    // io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Karla-Regular.ttf", 14.0f);
-    ImFont* font = io.Fonts->AddFontFromFileTTF(
-        "imgui/misc/fonts/FiraCode-Regular.ttf", 14.0f);
-    font = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Consolas.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("fonts/DroidSans.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("fonts/Roboto-Medium.ttf", 14.0f);
+    // io.Fonts->AddFontFromFileTTF("fonts/Karla-Regular.ttf", 14.0f);
+    ImFont* font =
+        io.Fonts->AddFontFromFileTTF("fonts/FiraCode-Regular.ttf", 14.0f);
+    font = io.Fonts->AddFontFromFileTTF("fonts/Consolas.ttf", 14.0f);
     io.FontDefault = font;
     io.ConfigDockingTransparentPayload = true;
     // ImFont* font =

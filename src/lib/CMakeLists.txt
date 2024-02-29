@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.1.0)
-project(merci_engine 
+project(class_engine 
     LANGUAGES C 
     VERSION 2.0.1
     DESCRIPTION "Simple, modular 2D Game engine"
-    HOMEPAGE_URL "https://ka05.net"
+    HOMEPAGE_URL "https://classngin.com"
 )
 set(SubProjects 
     console

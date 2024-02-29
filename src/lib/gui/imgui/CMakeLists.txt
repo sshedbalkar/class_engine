@@ -10,10 +10,6 @@ add_compile_options(
     $<$<CONFIG:Debug>:-g>
 )
 
-file(GLOB SRC_FILES    
-    "*.cpp"
-)
-
 set(SourceFiles 
     ${PROJECT_SOURCE_DIR}/imgui.cpp
     ${PROJECT_SOURCE_DIR}/imgui_demo.cpp
