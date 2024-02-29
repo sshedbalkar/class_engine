@@ -19,7 +19,7 @@ static int parse_opt(int key, char* arg, struct argp_state* state) {
     switch (key) {
         case 'e':
             cls_print("Current modules in the engine: %d\n",
-                      cls_vector_total(&eng->modules));
+                      cls_vector_total(&eng->submodules));
             cls_print("%s", cls_engine_get_modules_names(eng));
             cls_print("\n");
             break;

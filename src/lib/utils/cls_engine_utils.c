@@ -15,9 +15,9 @@
 
 static const char* __get_next_module_str(void* _obj, int _index) {
     cls_engine_t* _eng = (cls_engine_t*)_obj;
-    if (_index < cls_vector_total(&_eng->modules)) {
+    if (_index < cls_vector_total(&_eng->submodules)) {
         return cls_module_type_t_to_string(
-            (*(cls_obj_static_t**)cls_vector_get(&_eng->modules, _index))
+            (*(cls_obj_static_t**)cls_vector_get(&_eng->submodules, _index))
                 ->type);
     }
     return NULL;

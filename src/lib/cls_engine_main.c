@@ -23,14 +23,14 @@ static cls_vector_t __modules_map;
 
 static void __add_default_modules(cls_engine_t* eng) {
     cls_console_t* console = cls_console_ctor();
-    cls_vector_add(&eng->modules, console);
+    cls_vector_add(&eng->submodules, console);
 }
 
 static void __remove_all_modules(cls_engine_t* eng) {
-    int i, t = cls_vector_total(&eng->modules);
+    int i, t = cls_vector_total(&eng->submodules);
     cls_obj_static_t** pmodule;
     for (i = 0; i < t; ++i) {
-        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->modules, i);
+        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
         if (*pmodule != NULL) (*pmodule)->dtor(pmodule);
     }
 }
@@ -77,14 +77,14 @@ static cls_engine_t* __create() {
 cls_engine_t* cls_engine_ctor() {
     cls_engine_t* eng = __create();
     eng->base = &__base;
-    cls_vector_init_capacity(&eng->modules, CLS_ENGINE_DEFAULT_MODULE_COUNT);
+    cls_vector_init_capacity(&eng->submodules, CLS_ENGINE_DEFAULT_MODULE_COUNT);
     __add_default_modules(eng);
     return eng;
 }
 
 int cls_engine_dtor(cls_engine_t* eng) {
     __remove_all_modules(eng);
-    cls_vector_free(&eng->modules);
+    cls_vector_free(&eng->submodules);
     cls_free(eng);
     return 0;
 }
@@ -92,7 +92,7 @@ int cls_engine_dtor(cls_engine_t* eng) {
 int cls_engine_add_module(cls_engine_t* eng, cls_module_type_t type) {
     cls_obj_static_t* mod =
         ((cls_obj_static_t*)cls_vector_get(&__modules_map, type))->ctor();
-    cls_vector_add(&eng->modules, mod);
+    cls_vector_add(&eng->submodules, mod);
     return 0;
 }
 
@@ -101,13 +101,13 @@ int cls_engine_remove_module(cls_engine_t* eng, cls_module_type_t type) {
     cls_obj_static_t** pmod;
     do {
         found = 0;
-        t = cls_vector_total(&eng->modules);
+        t = cls_vector_total(&eng->submodules);
         for (i = 0; i < t; ++i) {
-            pmod = cls_vector_get(&eng->modules, i);
+            pmod = cls_vector_get(&eng->submodules, i);
             if ((*pmod)->type == type) {
                 found = 1;
                 (*pmod)->dtor(pmod);
-                cls_vector_delete(&eng->modules, i);
+                cls_vector_delete(&eng->submodules, i);
                 i = t;
                 ++count;
             }
@@ -118,10 +118,10 @@ int cls_engine_remove_module(cls_engine_t* eng, cls_module_type_t type) {
 
 cls_obj_static_t* cls_engine_get_module(cls_engine_t* eng,
                                         cls_module_type_t type) {
-    int i, t = cls_vector_total(&eng->modules);
+    int i, t = cls_vector_total(&eng->submodules);
     cls_obj_static_t** pmodule;
     for (i = 0; i < t; ++i) {
-        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->modules, i);
+        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
         if ((*pmodule)->type == type) return *pmodule;
     }
     return NULL;

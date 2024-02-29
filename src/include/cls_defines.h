@@ -42,18 +42,18 @@ All rights reserved
 #endif
 
 /* By default MRC uses the C calling convention */
-#ifndef MRCCALL
+#ifndef CLSCALL
 #if (defined(__WIN32__) || defined(__WINRT__)) && !defined(__GNUC__)
 #define SDLCALL __cdecl
 #elif defined(__OS2__) || defined(__EMX__)
-#define MRCCALL _System
+#define CLSCALL _System
 #if defined(__GNUC__) && !defined(_System)
 #define _System /* for old EMX/GCC compat.  */
 #endif
 #else
-#define MRCCALL
+#define CLSCALL
 #endif
-#endif /* MRCCALL */
+#endif /* CLSCALL */
 
 #define CLS_DEFAULT_STR_BUFF_SIZE 1024
 #define CLS_EVENTS_COUNT_MAX \

@@ -52,7 +52,7 @@ EXTERNC cls_obj_static_t* cls_ui_static_init() {
     SDL_RWops* _io = SDL_RWFromFile(_file, "r");
     SDL_ClearError();
     if (_io != NULL) {
-        if (SDL_RWread(_io, _str_data, sizeof(_str_data), 1) > 0) {
+        if (SDL_RWread(_io, _str_data, 1, sizeof(_str_data)) > 0) {
             cls_print("Hello, \n%s\n", _str_data);
         } else {
             cls_print("[ERR]: %s\n", SDL_GetError());

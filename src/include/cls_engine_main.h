@@ -18,7 +18,7 @@
 typedef struct cls_engine_t {
     // Has to be the first property
     cls_obj_static_t* base;
-    cls_vector_t modules;
+    cls_vector_t submodules;
 } cls_engine_t;
 
 extern cls_obj_static_t* cls_engine_static_init();
