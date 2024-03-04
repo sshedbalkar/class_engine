@@ -24,21 +24,10 @@ static cls_obj_static_t __base = {CLS_ENGINE, (cls_fn_vp_v_t)&cls_engine_ctor,
                                   (cls_fn_vp_vp_t)&cls_engine_serialize,
                                   (cls_fn_i_vp_vp_t)&cls_engine_deserialize};
 
-// static cls_vector_t __modules_map;
-
 static void __add_default_modules(cls_engine_t* eng) {
     cls_console_t* console = cls_console_ctor();
     cls_vector_add(&eng->submodules, console);
 }
-
-// static void __remove_all_modules(cls_engine_t* eng) {
-//     int i, t = cls_vector_total(&eng->submodules);
-//     cls_obj_static_t** pmodule;
-//     for (i = 0; i < t; ++i) {
-//         pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
-//         if (*pmodule != NULL) (*pmodule)->dtor(pmodule);
-//     }
-// }
 
 static void __on_event_quit() { cls_timer_stop(); }
 
@@ -56,13 +45,10 @@ cls_obj_static_t* cls_engine_static_init() {
     cls_events_static_init();
     // CLS_CORE,
     // CLS_CONSOLE,
-    // cls_vector_set(&__modules_map, CLS_CONSOLE, cls_console_static_init());
     cls_modules_static_register_module_type(cls_console_static_init());
     // CLS_GRAPHICS,
-    // cls_vector_set(&__modules_map, CLS_GRAPHICS, cls_graphics_static_init());
     cls_modules_static_register_module_type(cls_graphics_static_init());
     // CLS_GRAPHICS_UI
-    // cls_vector_set(&__modules_map, CLS_GRAPHICS_UI, cls_ui_static_init());
     cls_modules_static_register_module_type(cls_ui_static_init());
     cls_events_reg_callback(CLS_EVT_QUIT, &__on_event_quit);
     return &__base;
@@ -78,9 +64,6 @@ int cls_engine_static_term() {
     cls_modules_static_term();
     return 0;
 }
-// void cls_engine_static_register_module_type(cls_obj_static_t* tHandler) {
-//     cls_vector_set(&__modules_map, tHandler->type, tHandler);
-// }
 
 static cls_engine_t* __create() {
     cls_engine_t* eng = (cls_engine_t*)cls_alloc(sizeof(cls_engine_t));
@@ -102,12 +85,6 @@ int cls_engine_dtor(cls_engine_t* eng) {
     return 0;
 }
 
-// cls_obj_static_t* cls_engine_create_module(cls_module_type_t _type) {
-//     cls_obj_static_t* mod =
-//         ((cls_obj_static_t*)cls_vector_get(&__modules_map, _type))->ctor();
-//     return mod;
-// }
-
 cls_obj_static_t* cls_engine_add_module(cls_engine_t* eng,
                                         cls_module_type_t type) {
     // cls_vector_add(&eng->submodules, cls_engine_create_module(type));
@@ -116,35 +93,11 @@ cls_obj_static_t* cls_engine_add_module(cls_engine_t* eng,
 }
 
 int cls_engine_remove_module(cls_engine_t* eng, cls_module_type_t type) {
-    // int i, t, count = 0, found = 0;
-    // cls_obj_static_t** pmod;
-    // do {
-    //     found = 0;
-    //     t = cls_vector_total(&eng->submodules);
-    //     for (i = 0; i < t; ++i) {
-    //         pmod = cls_vector_get(&eng->submodules, i);
-    //         if ((*pmod)->type == type) {
-    //             found = 1;
-    //             (*pmod)->dtor(pmod);
-    //             cls_vector_delete(&eng->submodules, i);
-    //             i = t;
-    //             ++count;
-    //         }
-    //     }
-    // } while (found > 0);
-    // return count;
     return cls_modules_remove_module(&eng->submodules, type);
 }
 
 cls_obj_static_t* cls_engine_get_module(cls_engine_t* eng,
                                         cls_module_type_t type) {
-    // int i, t = cls_vector_total(&eng->submodules);
-    // cls_obj_static_t** pmodule;
-    // for (i = 0; i < t; ++i) {
-    //     pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
-    //     if ((*pmodule)->type == type) return *pmodule;
-    // }
-    // return NULL;
     return cls_modules_get_module(&eng->submodules, type);
 }
 
@@ -160,7 +113,7 @@ int cls_engine_run(cls_engine_t* eng) {
     cls_timer_run();
     return 0;
 }
-
+char _buff2[1024];
 const char* cls_engine_serialize(cls_engine_t* _eng) {
     cJSON* _root = cJSON_CreateObject();
     cJSON* _base = cJSON_CreateObject();
@@ -170,11 +123,11 @@ const char* cls_engine_serialize(cls_engine_t* _eng) {
                             cls_module_type_to_string(_eng->base->type));
     cJSON_AddItemToObject(_root, "submodules",
                           cls_modules_serialize(&_eng->submodules));
-    char* _buff = cls_util_get_str_buff();
-    if (cJSON_PrintPreallocated(_root, _buff, CLS_DEFAULT_STR_BUFF_SIZE, 1) ==
+    // char* _buff = cls_util_get_str_buff();
+    if (cJSON_PrintPreallocated(_root, _buff2, CLS_DEFAULT_STR_BUFF_SIZE, 0) ==
         1) {
         cJSON_Delete(_root);
-        return _buff;
+        return _buff2;
     }
     cJSON_Delete(_root);
     return NULL_STR;

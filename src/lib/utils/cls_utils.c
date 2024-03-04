@@ -39,8 +39,8 @@ const char* cls_util_construct_str_from_list(void* _list,
     return (const char*)&__str_buffer;
 }
 
-char* cls_util_get_str_buff() { return &__str_buffer; }
+char* cls_util_get_str_buff() { return __str_buffer; }
 
 int cls_util_ptr_to_str(void* _ptr) {
-    return snprintf(&__str_buffer, CLS_DEFAULT_STR_BUFF_SIZE, "%p", _ptr);
+    return snprintf(__str_buffer, CLS_DEFAULT_STR_BUFF_SIZE, "%p", _ptr);
 }

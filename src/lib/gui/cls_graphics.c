@@ -117,7 +117,8 @@ cJSON* cls_graphics_serz(cls_graphics_t* _obj) {
     }
     cJSON_AddItemToObject(_root, "submodules",
                           cls_modules_serialize(&_obj->submodules));
-    cJSON_AddItemToObject(_root, "base", _base);
+    cJSON_AddItemToObject(_root, cls_module_type_to_string(_obj->base->type),
+                          _base);
     cls_util_ptr_to_str(_obj->window);
     cJSON_AddStringToObject(_root, "window", cls_util_get_str_buff());
     cls_util_ptr_to_str(_obj->renderer);

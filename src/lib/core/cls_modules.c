@@ -58,9 +58,13 @@ int cls_modules_deserialize(cls_vector_t* _vec, cJSON* _arr) {
 
 cls_obj_static_t* cls_modules_static_init() {
     cls_vector_init_capacity(&__modules_map, CLS_MODULES_DEFAULT_MODULE_COUNT);
+    return NULL;
 }
 
-int cls_modules_static_term() { cls_vector_free(&__modules_map); }
+int cls_modules_static_term() {
+    cls_vector_free(&__modules_map);
+    return 0;
+}
 
 void cls_modules_static_register_module_type(cls_obj_static_t* tHandler) {
     cls_vector_set(&__modules_map, tHandler->type, tHandler);
