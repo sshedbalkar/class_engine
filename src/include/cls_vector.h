@@ -15,7 +15,7 @@ File: cls_vector.h
 #define VECTOR_INIT_CAPACITY 4
 #define VECTOR_REALLOC_ON_DELETE
 
-typedef struct {
+typedef struct cls_vector_t {
     size_t length;
     size_t capacity;
     void **items;

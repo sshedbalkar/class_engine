@@ -16,6 +16,7 @@
 #include "cls_data_container.h"
 #include "cls_error.h"
 #include "cls_utils.h"
+#include "cls_modules.h"
 
 static cls_obj_static_t __base = {
     CLS_GRAPHICS, (cls_fn_vp_v_t)&cls_graphics_ctor,
@@ -65,6 +66,7 @@ int cls_graphics_static_term() {
 cls_graphics_t* cls_graphics_ctor() {
     cls_graphics_t* _obj = __create();
     _obj->base = &__base;
+    cls_vector_init(&_obj->submodules);
 // SDL Init
 // From 2.0.18: Enable native IME.
 #ifdef SDL_HINT_IME_SHOW_UI
@@ -101,6 +103,8 @@ int cls_graphics_dtor(cls_graphics_t* obj) {
     CLS_H_GRAPHICS_OBJ = 0;
     SDL_DestroyRenderer(obj->renderer);
     SDL_DestroyWindow(obj->window);
+    cls_modules_remove_all_modules(&obj->submodules);
+    cls_vector_free(&obj->submodules);
     cls_free(obj);
     return 0;
 }
@@ -111,8 +115,9 @@ cJSON* cls_graphics_serz(cls_graphics_t* _obj) {
     if (_base == NULL) {
         cls_print("[ERR]: %s\n", cls_error_serialized());
     }
-    cJSON_AddItemToObject(_root, cls_module_type_to_string(_obj->base->type),
-                          _base);
+    cJSON_AddItemToObject(_root, "submodules",
+                          cls_modules_serialize(&_obj->submodules));
+    cJSON_AddItemToObject(_root, "base", _base);
     cls_util_ptr_to_str(_obj->window);
     cJSON_AddStringToObject(_root, "window", cls_util_get_str_buff());
     cls_util_ptr_to_str(_obj->renderer);
@@ -123,4 +128,19 @@ int cls_graphics_dsrz(cls_graphics_t* _obj, cJSON* _json) {
     (void)_obj;
     (void)_json;
     return 0;
+}
+
+cls_obj_static_t* cls_graphics_add_module(cls_graphics_t* _gra,
+                                          cls_module_type_t type) {
+    cls_obj_static_t* _mod = cls_modules_add_module(&_gra->submodules, type);
+    return _mod;
+}
+
+int cls_graphics_remove_module(cls_graphics_t* _gra, cls_module_type_t type) {
+    return cls_modules_remove_module(&_gra->submodules, type);
+}
+
+cls_obj_static_t* cls_graphics_get_module(cls_graphics_t* _gra,
+                                          cls_module_type_t type) {
+    return cls_modules_get_module(&_gra->submodules, type);
 }

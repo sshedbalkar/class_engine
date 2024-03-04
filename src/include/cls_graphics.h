@@ -7,10 +7,9 @@ All rights reserved
 #define __CLS_GRAPHICS_H
 
 #include "cls_types.h"
+#include "cls_vector.h"
 
-struct SDL_Window;
 typedef struct SDL_Window SDL_Window;
-struct SDL_Renderer;
 typedef struct SDL_Renderer SDL_Renderer;
 typedef struct cJSON cJSON;
 
@@ -19,6 +18,7 @@ typedef struct {
     cls_obj_static_t* base;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    cls_vector_t submodules;
 } cls_graphics_t;
 
 extern void cls_graphics_test1(cls_graphics_t* obj);
@@ -33,6 +33,15 @@ extern int cls_graphics_dtor(cls_graphics_t* obj);
 
 cJSON* cls_graphics_serz(cls_graphics_t* _obj);
 int cls_graphics_dsrz(cls_graphics_t* _obj, cJSON* _json);
+
+extern cls_obj_static_t* cls_graphics_add_module(cls_graphics_t* _gra,
+                                                 cls_module_type_t type);
+
+extern int cls_graphics_remove_module(cls_graphics_t* _gra,
+                                      cls_module_type_t type);
+
+extern cls_obj_static_t* cls_graphics_get_module(cls_graphics_t* _gra,
+                                                 cls_module_type_t type);
 
 extern unsigned int CLS_H_SDL_EVT_OBJ;
 extern unsigned int CLS_H_GRAPHICS_OBJ;

@@ -17,27 +17,28 @@
 #include "cls_timer.h"
 #include "cJSON.h"
 #include "cls_utils.h"
+#include "cls_modules.h"
 
 static cls_obj_static_t __base = {CLS_ENGINE, (cls_fn_vp_v_t)&cls_engine_ctor,
                                   (cls_fn_i_vp_t)&cls_engine_dtor,
                                   (cls_fn_vp_vp_t)&cls_engine_serialize,
                                   (cls_fn_i_vp_vp_t)&cls_engine_deserialize};
 
-static cls_vector_t __modules_map;
+// static cls_vector_t __modules_map;
 
 static void __add_default_modules(cls_engine_t* eng) {
     cls_console_t* console = cls_console_ctor();
     cls_vector_add(&eng->submodules, console);
 }
 
-static void __remove_all_modules(cls_engine_t* eng) {
-    int i, t = cls_vector_total(&eng->submodules);
-    cls_obj_static_t** pmodule;
-    for (i = 0; i < t; ++i) {
-        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
-        if (*pmodule != NULL) (*pmodule)->dtor(pmodule);
-    }
-}
+// static void __remove_all_modules(cls_engine_t* eng) {
+//     int i, t = cls_vector_total(&eng->submodules);
+//     cls_obj_static_t** pmodule;
+//     for (i = 0; i < t; ++i) {
+//         pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
+//         if (*pmodule != NULL) (*pmodule)->dtor(pmodule);
+//     }
+// }
 
 static void __on_event_quit() { cls_timer_stop(); }
 
@@ -47,19 +48,22 @@ cls_obj_static_t* cls_engine_static_init() {
     _hooks.free_fn = cls_free;
     cJSON_InitHooks(&_hooks);
     //
-    cls_vector_init_capacity(&__modules_map, CLS_ENGINE_DEFAULT_MODULE_COUNT);
-    cls_vector_set(&__modules_map, CLS_ENGINE, &__base);
+    cls_modules_static_init();
+    cls_modules_static_register_module_type(&__base);
     cls_data_container_static_init();
     cls_timer_static_init();
     // CLS_GLUE,
     cls_events_static_init();
     // CLS_CORE,
     // CLS_CONSOLE,
-    cls_vector_set(&__modules_map, CLS_CONSOLE, cls_console_static_init());
+    // cls_vector_set(&__modules_map, CLS_CONSOLE, cls_console_static_init());
+    cls_modules_static_register_module_type(cls_console_static_init());
     // CLS_GRAPHICS,
-    cls_vector_set(&__modules_map, CLS_GRAPHICS, cls_graphics_static_init());
+    // cls_vector_set(&__modules_map, CLS_GRAPHICS, cls_graphics_static_init());
+    cls_modules_static_register_module_type(cls_graphics_static_init());
     // CLS_GRAPHICS_UI
-    cls_vector_set(&__modules_map, CLS_GRAPHICS_UI, cls_ui_static_init());
+    // cls_vector_set(&__modules_map, CLS_GRAPHICS_UI, cls_ui_static_init());
+    cls_modules_static_register_module_type(cls_ui_static_init());
     cls_events_reg_callback(CLS_EVT_QUIT, &__on_event_quit);
     return &__base;
 }
@@ -71,12 +75,12 @@ int cls_engine_static_term() {
     cls_events_static_term();
     cls_timer_static_term();
     cls_data_container_static_term();
-    cls_vector_free(&__modules_map);
+    cls_modules_static_term();
     return 0;
 }
-void cls_engine_static_register_module_type(cls_obj_static_t* tHandler) {
-    cls_vector_set(&__modules_map, tHandler->type, tHandler);
-}
+// void cls_engine_static_register_module_type(cls_obj_static_t* tHandler) {
+//     cls_vector_set(&__modules_map, tHandler->type, tHandler);
+// }
 
 static cls_engine_t* __create() {
     cls_engine_t* eng = (cls_engine_t*)cls_alloc(sizeof(cls_engine_t));
@@ -92,48 +96,56 @@ cls_engine_t* cls_engine_ctor() {
 }
 
 int cls_engine_dtor(cls_engine_t* eng) {
-    __remove_all_modules(eng);
+    cls_modules_remove_all_modules(&eng->submodules);
     cls_vector_free(&eng->submodules);
     cls_free(eng);
     return 0;
 }
 
-int cls_engine_add_module(cls_engine_t* eng, cls_module_type_t type) {
-    cls_obj_static_t* mod =
-        ((cls_obj_static_t*)cls_vector_get(&__modules_map, type))->ctor();
-    cls_vector_add(&eng->submodules, mod);
-    return 0;
+// cls_obj_static_t* cls_engine_create_module(cls_module_type_t _type) {
+//     cls_obj_static_t* mod =
+//         ((cls_obj_static_t*)cls_vector_get(&__modules_map, _type))->ctor();
+//     return mod;
+// }
+
+cls_obj_static_t* cls_engine_add_module(cls_engine_t* eng,
+                                        cls_module_type_t type) {
+    // cls_vector_add(&eng->submodules, cls_engine_create_module(type));
+    cls_obj_static_t* _mod = cls_modules_add_module(&eng->submodules, type);
+    return _mod;
 }
 
 int cls_engine_remove_module(cls_engine_t* eng, cls_module_type_t type) {
-    int i, t, count = 0, found = 0;
-    cls_obj_static_t** pmod;
-    do {
-        found = 0;
-        t = cls_vector_total(&eng->submodules);
-        for (i = 0; i < t; ++i) {
-            pmod = cls_vector_get(&eng->submodules, i);
-            if ((*pmod)->type == type) {
-                found = 1;
-                (*pmod)->dtor(pmod);
-                cls_vector_delete(&eng->submodules, i);
-                i = t;
-                ++count;
-            }
-        }
-    } while (found > 0);
-    return count;
+    // int i, t, count = 0, found = 0;
+    // cls_obj_static_t** pmod;
+    // do {
+    //     found = 0;
+    //     t = cls_vector_total(&eng->submodules);
+    //     for (i = 0; i < t; ++i) {
+    //         pmod = cls_vector_get(&eng->submodules, i);
+    //         if ((*pmod)->type == type) {
+    //             found = 1;
+    //             (*pmod)->dtor(pmod);
+    //             cls_vector_delete(&eng->submodules, i);
+    //             i = t;
+    //             ++count;
+    //         }
+    //     }
+    // } while (found > 0);
+    // return count;
+    return cls_modules_remove_module(&eng->submodules, type);
 }
 
 cls_obj_static_t* cls_engine_get_module(cls_engine_t* eng,
                                         cls_module_type_t type) {
-    int i, t = cls_vector_total(&eng->submodules);
-    cls_obj_static_t** pmodule;
-    for (i = 0; i < t; ++i) {
-        pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
-        if ((*pmodule)->type == type) return *pmodule;
-    }
-    return NULL;
+    // int i, t = cls_vector_total(&eng->submodules);
+    // cls_obj_static_t** pmodule;
+    // for (i = 0; i < t; ++i) {
+    //     pmodule = (cls_obj_static_t**)cls_vector_get(&eng->submodules, i);
+    //     if ((*pmodule)->type == type) return *pmodule;
+    // }
+    // return NULL;
+    return cls_modules_get_module(&eng->submodules, type);
 }
 
 int cls_parse_args(cls_engine_t* eng, int argc, char** argv) {
@@ -152,23 +164,14 @@ int cls_engine_run(cls_engine_t* eng) {
 const char* cls_engine_serialize(cls_engine_t* _eng) {
     cJSON* _root = cJSON_CreateObject();
     cJSON* _base = cJSON_CreateObject();
+    const char* _name = cls_module_type_to_string(_eng->base->type);
+    cls_print("Engine: %s\n", _name);
     cJSON_AddStringToObject(_base, "base",
                             cls_module_type_to_string(_eng->base->type));
-    cJSON* _submodules = cJSON_AddArrayToObject(_root, "submodules");
-    cls_obj_static_t** _module;
-    cJSON* _module_json;
-    int _i, _c = cls_vector_capacity(&_eng->submodules);
-    for (_i = 0; _i < _c; ++_i) {
-        _module = (cls_obj_static_t**)cls_vector_get(&_eng->submodules, _i);
-        if (_module == NULL) {
-            cJSON_AddNullToObject(_submodules, "null");
-        } else {
-            _module_json = (*_module)->serialize(_module);
-            cJSON_AddItemToArray(_submodules, _module_json);
-        }
-    }
+    cJSON_AddItemToObject(_root, "submodules",
+                          cls_modules_serialize(&_eng->submodules));
     char* _buff = cls_util_get_str_buff();
-    if (cJSON_PrintPreallocated(_root, _buff, CLS_DEFAULT_STR_BUFF_SIZE, 0) ==
+    if (cJSON_PrintPreallocated(_root, _buff, CLS_DEFAULT_STR_BUFF_SIZE, 1) ==
         1) {
         cJSON_Delete(_root);
         return _buff;

@@ -25,13 +25,12 @@ extern cls_obj_static_t* cls_engine_static_init();
 
 extern int cls_engine_static_term();
 
-extern void cls_engine_static_register_module_type(cls_obj_static_t* tHandler);
-
 extern cls_engine_t* cls_engine_ctor();
 
 extern int cls_engine_dtor(cls_engine_t* eng);
 
-extern int cls_engine_add_module(cls_engine_t* eng, cls_module_type_t type);
+extern cls_obj_static_t* cls_engine_add_module(cls_engine_t* eng,
+                                               cls_module_type_t type);
 
 extern int cls_engine_remove_module(cls_engine_t* eng, cls_module_type_t type);
 

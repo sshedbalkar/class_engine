@@ -11,9 +11,7 @@
 #include "cls_console.h"
 
 void cls_vector_init(cls_vector_t *v) {
-    v->capacity = VECTOR_INIT_CAPACITY;
-    v->length = 0;
-    v->items = cls_alloc(sizeof(void *) * v->capacity);
+    cls_vector_init_capacity(v, VECTOR_INIT_CAPACITY);
 }
 
 void cls_vector_init_capacity(cls_vector_t *v, size_t capacity) {
