@@ -6,17 +6,19 @@
  * File: cls_ui.cpp
  */
 
-#include "cls_ui.h"
 #include <errno.h>
 
 extern "C" {
 #include <SDL2/SDL.h>
+#include "cls_ui.h"
 #include "cls_console.h"
 #include "cls_memory.h"
 #include "cls_events.h"
 #include "cls_list_core_events.h"
 #include "cls_data_container.h"
 #include "cls_graphics.h"
+#include "cJSON.h"
+#include "cls_error.h"
 }
 
 #include "imgui.h"
@@ -29,8 +31,9 @@ extern "C" {
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
-static cls_obj_static_t __base = {CLS_GRAPHICS_UI, (cls_fn_vp_v_t)&cls_ui_ctor,
-                                  (cls_fn_i_vp_t)&cls_ui_dtor};
+static cls_obj_static_t __base = {
+    CLS_GRAPHICS_UI, (cls_fn_vp_v_t)&cls_ui_ctor, (cls_fn_i_vp_t)&cls_ui_dtor,
+    (cls_fn_vp_vp_t)&cls_ui_serz, (cls_fn_i_vp_vp_t)&cls_ui_dsrz};
 
 static cls_ui_t* __ui;
 static ImVec4 __clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -281,5 +284,21 @@ EXTERNC int cls_ui_dtor(cls_ui_t* obj) {
 
     cls_free(obj);
     __ui = nullptr;
+    return 0;
+}
+
+cJSON* cls_ui_serz(cls_ui_t* _obj) {
+    cJSON* _root = cJSON_CreateObject();
+    cJSON* _base = cls_static_module_serialize(_obj->base);
+    if (_base == NULL) {
+        cls_print("[ERR]: %s\n", cls_error_serialized());
+    }
+    cJSON_AddItemToObject(_root, cls_module_type_to_string(_obj->base->type),
+                          _base);
+    return _root;
+}
+int cls_ui_dsrz(cls_ui_t* _obj, cJSON* _json) {
+    (void)_obj;
+    (void)_json;
     return 0;
 }

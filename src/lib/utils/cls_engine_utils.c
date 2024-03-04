@@ -16,7 +16,7 @@
 static const char* __get_next_module_str(void* _obj, int _index) {
     cls_engine_t* _eng = (cls_engine_t*)_obj;
     if (_index < cls_vector_total(&_eng->submodules)) {
-        return cls_module_type_t_to_string(
+        return cls_module_type_to_string(
             (*(cls_obj_static_t**)cls_vector_get(&_eng->submodules, _index))
                 ->type);
     }
@@ -24,5 +24,5 @@ static const char* __get_next_module_str(void* _obj, int _index) {
 }
 
 inline const char* cls_engine_get_modules_names(cls_engine_t* eng) {
-    return cls_construct_str_from_list(eng, &__get_next_module_str);
+    return cls_util_construct_str_from_list(eng, &__get_next_module_str);
 }

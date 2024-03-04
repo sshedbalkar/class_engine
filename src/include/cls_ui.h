@@ -10,6 +10,8 @@ All rights reserved
 #include "cls_types.h"
 #include "cls_defines.h"
 
+typedef struct cJSON cJSON;
+
 typedef struct {
     // Has to be the first property
     cls_obj_static_t* base;
@@ -30,4 +32,6 @@ EXTERNC cls_ui_t* cls_ui_ctor();
 
 EXTERNC int cls_ui_dtor(cls_ui_t* obj);
 
+EXTERNC cJSON* cls_ui_serz(cls_ui_t* _obj);
+EXTERNC int cls_ui_dsrz(cls_ui_t* _obj, cJSON* _json);
 #endif    // __CLS_UI_H

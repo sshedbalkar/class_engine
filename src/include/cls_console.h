@@ -10,8 +10,7 @@ All rights reserved
 #include "cls_types.h"
 #include "cls_defines.h"
 
-struct JsonNode;
-typedef struct JsonNode JsonNode;
+typedef struct cJSON cJSON;
 
 typedef struct {
     // Has to be the first property
@@ -28,7 +27,7 @@ extern cls_console_t* cls_console_ctor();
 
 extern int cls_console_dtor(cls_console_t* obj);
 
-extern JsonNode* cls_console_serz(cls_console_t* _obj);
-extern void cls_console_dsrz(cls_console_t* _obj, JsonNode* _json);
+extern cJSON* cls_console_serz(cls_console_t* _obj);
+extern int cls_console_dsrz(cls_console_t* _obj, cJSON* _json);
 
 #endif    //__CLS_CONSOLE_H

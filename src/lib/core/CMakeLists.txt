@@ -15,6 +15,7 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/cls_events.c
     ${PROJECT_SOURCE_DIR}/cls_timer.c
     ${PROJECT_SOURCE_DIR}/cls_data_container.c
+    ${PROJECT_SOURCE_DIR}/cls_error.c
 )
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})

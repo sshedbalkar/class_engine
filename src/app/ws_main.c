@@ -24,6 +24,8 @@ ws_app_t* ws_app_ctor() {
     cls_engine_add_module(app->engine, CLS_GRAPHICS);
     cls_engine_add_module(app->engine, CLS_GRAPHICS_UI);
     // int r = cls_engine_remove_module(app->engine, CLS_GRAPHICS);
+    const char* str = cls_engine_serialize(app->engine);
+    cls_print("ENGINE: %s\n", str);
     return app;
 }
 

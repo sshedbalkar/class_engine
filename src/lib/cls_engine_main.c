@@ -15,9 +15,13 @@
 #include "cls_graphics.h"
 #include "cls_ui.h"
 #include "cls_timer.h"
+#include "cJSON.h"
+#include "cls_utils.h"
 
 static cls_obj_static_t __base = {CLS_ENGINE, (cls_fn_vp_v_t)&cls_engine_ctor,
-                                  (cls_fn_i_vp_t)&cls_engine_dtor};
+                                  (cls_fn_i_vp_t)&cls_engine_dtor,
+                                  (cls_fn_vp_vp_t)&cls_engine_serialize,
+                                  (cls_fn_i_vp_vp_t)&cls_engine_deserialize};
 
 static cls_vector_t __modules_map;
 
@@ -38,6 +42,11 @@ static void __remove_all_modules(cls_engine_t* eng) {
 static void __on_event_quit() { cls_timer_stop(); }
 
 cls_obj_static_t* cls_engine_static_init() {
+    cJSON_Hooks _hooks;
+    _hooks.malloc_fn = cls_alloc;
+    _hooks.free_fn = cls_free;
+    cJSON_InitHooks(&_hooks);
+    //
     cls_vector_init_capacity(&__modules_map, CLS_ENGINE_DEFAULT_MODULE_COUNT);
     cls_vector_set(&__modules_map, CLS_ENGINE, &__base);
     cls_data_container_static_init();
@@ -137,5 +146,39 @@ int cls_parse_args(cls_engine_t* eng, int argc, char** argv) {
 int cls_engine_run(cls_engine_t* eng) {
     (void)eng;
     cls_timer_run();
+    return 0;
+}
+
+const char* cls_engine_serialize(cls_engine_t* _eng) {
+    cJSON* _root = cJSON_CreateObject();
+    cJSON* _base = cJSON_CreateObject();
+    cJSON_AddStringToObject(_base, "base",
+                            cls_module_type_to_string(_eng->base->type));
+    cJSON* _submodules = cJSON_AddArrayToObject(_root, "submodules");
+    cls_obj_static_t** _module;
+    cJSON* _module_json;
+    int _i, _c = cls_vector_capacity(&_eng->submodules);
+    for (_i = 0; _i < _c; ++_i) {
+        _module = (cls_obj_static_t**)cls_vector_get(&_eng->submodules, _i);
+        if (_module == NULL) {
+            cJSON_AddNullToObject(_submodules, "null");
+        } else {
+            _module_json = (*_module)->serialize(_module);
+            cJSON_AddItemToArray(_submodules, _module_json);
+        }
+    }
+    char* _buff = cls_util_get_str_buff();
+    if (cJSON_PrintPreallocated(_root, _buff, CLS_DEFAULT_STR_BUFF_SIZE, 0) ==
+        1) {
+        cJSON_Delete(_root);
+        return _buff;
+    }
+    cJSON_Delete(_root);
+    return NULL_STR;
+}
+
+int cls_engine_deserialize(cls_engine_t* _eng, const char* _json) {
+    (void)_eng;
+    (void)_json;
     return 0;
 }

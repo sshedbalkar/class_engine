@@ -11,7 +11,10 @@ File: cls_utils.h
 #include "cls_types.h"
 
 extern unsigned int cls_util_get_unique_id();
-extern const char* cls_construct_str_from_list(void* obj, cls_fn_ccp_vp_i_t fn);
+extern const char* cls_util_construct_str_from_list(void* obj,
+                                                    cls_fn_ccp_vp_i_t fn);
+extern char* cls_util_get_str_buff();
+extern int cls_util_ptr_to_str(void* _ptr);
 
 extern unsigned int __id;
 

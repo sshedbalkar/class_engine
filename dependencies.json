@@ -9,10 +9,12 @@
         {"ninja-build":"1.11.1"},
         {"libsdl2-dev":"2.26.3+dfsg-1"},
         {"libsdl2-ttf-dev":"2.20.1+dfsg-2"},
-        {"pkg-config":"1.8.1"}
+        {"pkg-config":"1.8.1"},
+        {"valgrind":"3.22.0"}
     ],
     "optional":[
-        {"ubuntu": "Ubuntu 23.04"},
-        {"coredumpctl": "249.11-0ubuntu3.12"}
+        {"ubuntu": "Ubuntu 22.04"},
+        {"coredumpctl": "249.11-0ubuntu3.12"},
+        {"snap":"2.61.1"}
     ]
 }

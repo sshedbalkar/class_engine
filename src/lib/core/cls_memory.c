@@ -27,3 +27,5 @@ void* cls_realloc(void* ptr, size_t new_size) { return realloc(ptr, new_size); }
 void* cls_memset(void* dest, int ch, size_t count) {
     return memset(dest, ch, count);
 }
+
+void* cls_calloc(size_t num, size_t size) { return calloc(num, size); }

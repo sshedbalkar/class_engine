@@ -9,12 +9,13 @@ All rights reserved
 #include "cls_types.h"
 #include "cls_console.h"
 #include "cls_memory.h"
-#include "json.h"
+#include "cJSON.h"
+#include "cls_error.h"
 
 static cls_obj_static_t __base = {CLS_CONSOLE, (cls_fn_vp_v_t)&cls_console_ctor,
                                   (cls_fn_i_vp_t)&cls_console_dtor,
                                   (cls_fn_vp_vp_t)&cls_console_serz,
-                                  (cls_fn_v_vp_vp_t)&cls_console_dsrz};
+                                  (cls_fn_i_vp_vp_t)&cls_console_dsrz};
 
 DECLSPEC int CLSCALL cls_print(const char* format, ...) {
     int result;
@@ -45,13 +46,18 @@ int cls_console_dtor(cls_console_t* obj) {
     return 0;
 }
 
-JsonNode* cls_console_serz(cls_console_t* _obj) {
-    JsonNode* json = json_mkobject();
-    JsonNode* base =
-        json_mkstring(cls_module_type_t_to_string(_obj->base->type));
-    json_append_member(json, "base", base);
-    return json;
+cJSON* cls_console_serz(cls_console_t* _obj) {
+    cJSON* _root = cJSON_CreateObject();
+    cJSON* _base = cls_static_module_serialize(_obj->base);
+    if (_base == NULL) {
+        cls_print("[ERR]: %s\n", cls_error_serialized());
+    }
+    cJSON_AddItemToObject(_root, cls_module_type_to_string(_obj->base->type),
+                          _base);
+    return _root;
 }
-void cls_console_dsrz(cls_console_t* _obj, JsonNode* _json) {
-    JsonNode* base = json_find_member(_json, "base");
+int cls_console_dsrz(cls_console_t* _obj, cJSON* _json) {
+    (void)_obj;
+    (void)_json;
+    return 0;
 }

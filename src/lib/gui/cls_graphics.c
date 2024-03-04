@@ -7,16 +7,20 @@
  */
 
 #include <SDL2/SDL.h>
+#include "cJSON.h"
+#include "cls_events.h"
 #include "cls_memory.h"
 #include "cls_console.h"
 #include "cls_graphics.h"
-#include "cls_events.h"
 #include "cls_list_core_events.h"
 #include "cls_data_container.h"
+#include "cls_error.h"
+#include "cls_utils.h"
 
-static cls_obj_static_t __base = {CLS_GRAPHICS,
-                                  (cls_fn_vp_v_t)&cls_graphics_ctor,
-                                  (cls_fn_i_vp_t)&cls_graphics_dtor};
+static cls_obj_static_t __base = {
+    CLS_GRAPHICS, (cls_fn_vp_v_t)&cls_graphics_ctor,
+    (cls_fn_i_vp_t)&cls_graphics_dtor, (cls_fn_vp_vp_t)&cls_graphics_serz,
+    (cls_fn_i_vp_vp_t)&cls_graphics_dsrz};
 
 unsigned int CLS_H_SDL_EVT_OBJ;
 unsigned int CLS_H_GRAPHICS_OBJ;
@@ -98,5 +102,25 @@ int cls_graphics_dtor(cls_graphics_t* obj) {
     SDL_DestroyRenderer(obj->renderer);
     SDL_DestroyWindow(obj->window);
     cls_free(obj);
+    return 0;
+}
+
+cJSON* cls_graphics_serz(cls_graphics_t* _obj) {
+    cJSON* _root = cJSON_CreateObject();
+    cJSON* _base = cls_static_module_serialize(_obj->base);
+    if (_base == NULL) {
+        cls_print("[ERR]: %s\n", cls_error_serialized());
+    }
+    cJSON_AddItemToObject(_root, cls_module_type_to_string(_obj->base->type),
+                          _base);
+    cls_util_ptr_to_str(_obj->window);
+    cJSON_AddStringToObject(_root, "window", cls_util_get_str_buff());
+    cls_util_ptr_to_str(_obj->renderer);
+    cJSON_AddStringToObject(_root, "renderer", cls_util_get_str_buff());
+    return _root;
+}
+int cls_graphics_dsrz(cls_graphics_t* _obj, cJSON* _json) {
+    (void)_obj;
+    (void)_json;
     return 0;
 }

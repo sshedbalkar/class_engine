@@ -12,7 +12,7 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/cls_utils.c
     ${PROJECT_SOURCE_DIR}/cls_enums_to_string.c
     ${PROJECT_SOURCE_DIR}/cls_engine_utils.c
-    ${PROJECT_SOURCE_DIR}/json.c
+    ${PROJECT_SOURCE_DIR}/cJSON.c
 )
 
 add_library(${PROJECT_NAME} ${SourceFiles})

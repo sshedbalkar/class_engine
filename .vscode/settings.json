@@ -51,6 +51,7 @@
         "time.h": "c",
         "cls_timer.h": "c",
         "cls_graphics_terminal_ui_p.h": "c",
-        "json.h": "c"
+        "json.h": "c",
+        "cls_error.h": "c"
     }
 }

@@ -42,4 +42,8 @@ extern int cls_parse_args(cls_engine_t* eng, int argc, char** argv);
 
 extern int cls_engine_run(cls_engine_t* eng);
 
+extern const char* cls_engine_serialize(cls_engine_t* eng);
+
+extern int cls_engine_deserialize(cls_engine_t* eng, const char* json);
+
 #endif    // __CLS_ENGINE_MAIN_H
