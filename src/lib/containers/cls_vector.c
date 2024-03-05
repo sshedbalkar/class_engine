@@ -67,7 +67,9 @@ void cls_vector_replace(cls_vector_t *v, unsigned int index, void *item) {
 }
 
 void *cls_vector_get(cls_vector_t *v, unsigned int index) {
-    if (index < v->capacity) return v->items[index];
+    if (index < v->capacity) {
+        return v->items[index];
+    }
     return NULL;
 }
 

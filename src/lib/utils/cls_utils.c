@@ -13,7 +13,7 @@ File: cls_utils.c
 #include "cls_console.h"
 
 unsigned int __id = 0;
-double __log2;
+static double __log_2;
 static char __str_buffer[CLS_DEFAULT_STR_BUFF_SIZE];
 
 inline unsigned int cls_util_get_unique_id() { return __id++; }
@@ -64,9 +64,9 @@ unsigned int cls_util_round(double number) {
 
 unsigned int cls_util_upper_twos_exponent(unsigned int _val) {
     return (unsigned int)cls_util_round(
-        log((double)cls_util_upper_powerof_two(_val)) / __log2);
+        log((double)cls_util_upper_powerof_two(_val)) / __log_2);
 }
 
-void cls_util_static_init() { __log2 = log(2.0); }
+void cls_util_static_init() { __log_2 = log(2.0); }
 
 void cls_util_static_term() {}

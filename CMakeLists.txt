@@ -53,6 +53,11 @@ add_compile_options(
     
 )
 
+add_compile_definitions(
+    $<$<CONFIG:Debug>:CLS_DEBUG>
+    $<$<CONFIG:Debug>:CLS_DEBUG_LIVE>
+)
+
 include_directories(src/include)
 include_directories(src/app)
 
@@ -61,6 +66,13 @@ add_executable(${PROJECT_NAME} main.c)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/app)
 target_link_libraries(${PROJECT_NAME} PRIVATE class_engine word_scape)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    C_STANDARD 99
+    C_STANDARD_REQUIRED ON
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
+)
 
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD

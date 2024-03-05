@@ -38,6 +38,7 @@ cls_obj_static_t* cls_engine_static_init() {
     cJSON_InitHooks(&_hooks);
     //
     cls_util_static_init();
+    cls_memory_static_init();
     cls_modules_static_init();
     cls_modules_static_register_module_type(&__base);
     cls_data_container_static_init();
@@ -52,6 +53,10 @@ cls_obj_static_t* cls_engine_static_init() {
     // CLS_GRAPHICS_UI
     cls_modules_static_register_module_type(cls_ui_static_init());
     cls_events_reg_callback(CLS_EVT_QUIT, &__on_event_quit);
+    //
+    char* _memJson = cls_memory_serialize();
+    cls_print("Mem: %s\n", _memJson);
+    cls_free(_memJson);
     return &__base;
 }
 
@@ -64,6 +69,7 @@ int cls_engine_static_term() {
     cls_data_container_static_term();
     cls_modules_static_term();
     cls_util_static_term();
+    cls_memory_static_term();
     return 0;
 }
 
