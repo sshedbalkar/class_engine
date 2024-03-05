@@ -53,6 +53,7 @@
         "cls_graphics_terminal_ui_p.h": "c",
         "json.h": "c",
         "cls_error.h": "c",
-        "cls_modules.h": "c"
+        "cls_modules.h": "c",
+        "math.h": "c"
     }
 }

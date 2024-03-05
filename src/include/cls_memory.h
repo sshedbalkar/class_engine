@@ -16,4 +16,7 @@ extern void* cls_realloc(void* ptr, size_t new_size);
 extern void* cls_memset(void* dest, int ch, size_t count);
 extern void* cls_calloc(size_t num, size_t size);
 
+//////////////////////////////
+
+
 #endif    // __CLS_MEMORY_H

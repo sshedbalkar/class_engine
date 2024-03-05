@@ -7,11 +7,13 @@ File: cls_utils.c
 */
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "cls_defines.h"
 #include "cls_utils.h"
 #include "cls_console.h"
 
 unsigned int __id = 0;
+double __log2;
 static char __str_buffer[CLS_DEFAULT_STR_BUFF_SIZE];
 
 inline unsigned int cls_util_get_unique_id() { return __id++; }
@@ -44,3 +46,27 @@ char* cls_util_get_str_buff() { return __str_buffer; }
 int cls_util_ptr_to_str(void* _ptr) {
     return snprintf(__str_buffer, CLS_DEFAULT_STR_BUFF_SIZE, "%p", _ptr);
 }
+
+unsigned int cls_util_upper_powerof_two(unsigned int v) {
+    --v;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    ++v;
+    return v;
+}
+
+unsigned int cls_util_round(double number) {
+    return number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5);
+}
+
+unsigned int cls_util_upper_twos_exponent(unsigned int _val) {
+    return (unsigned int)cls_util_round(
+        log((double)cls_util_upper_powerof_two(_val)) / __log2);
+}
+
+void cls_util_static_init() { __log2 = log(2.0); }
+
+void cls_util_static_term() {}

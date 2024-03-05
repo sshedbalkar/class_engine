@@ -8,6 +8,8 @@
 #ifndef __CLS_ERROR_H
 #define __CLS_ERROR_H
 
+#include "cls_error_ids.h"
+
 typedef enum {
     CLS_ERROR_RECOVERABLE = 0,
     CLS_ERROR_FATAL,

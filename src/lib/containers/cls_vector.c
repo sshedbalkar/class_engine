@@ -104,3 +104,85 @@ void cls_vector_foreach(cls_vector_t *_v, cls_fn_v_vp_ui_vp_t _fn,
         (*_fn)(_v->items[_i], _i, _param);
     }
 }
+
+void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
+                          void *_data) {
+    if (_vec->capacity == _vec->length) {
+        if (_vec->capacity == 0) _vec->capacity = 1;
+        cls_vector_resize(_vec, _vec->capacity * 2);
+    }
+    unsigned int _i;
+    for (_i = _vec->length - 1; _i > _index; --_i) {
+        _vec->items[_i + 1] = _vec->items[_i];
+    }
+    _vec->items[_index] = _data;
+    ++_vec->length;
+}
+
+// Only works for vectors populated using 'cls_vector_insert_in_asc_order()'
+int cls_vector_asc_order_insert_pos(cls_vector_t *_vec, void *_data,
+                                    cls_fn_i_vp_vp_t _lessthan_fn) {
+    size_t _left = 0, _right = _vec->length - 1, _mid = 0;
+    while (_left <= _right) {
+        _mid = _left + (_right - _left) / 2;
+        if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
+            _left = _mid + 1;
+        } else if (_lessthan_fn(_data, _vec->items[_mid]) == CLS_TRUE) {
+            _right = _mid - 1;
+        } else {
+            // Data already exists
+            return -1;
+        }
+    }
+    // We found the index where the data needs to go
+    return _mid;
+}
+
+// Only works for vectors populated using 'cls_vector_insert_in_desc_order()'
+int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
+                                     cls_fn_i_vp_vp_t _lessthan_fn) {
+    size_t _left = 0, _right = _vec->length - 1, _mid = 0;
+    while (_left <= _right) {
+        _mid = _left + (_right - _left) / 2;
+        if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
+            _right = _mid - 1;
+        } else if (_lessthan_fn(_data, _vec->items[_mid]) == CLS_TRUE) {
+            _left = _mid + 1;
+        } else {
+            // Data already exists
+            return -1;
+        }
+    }
+    // We found the index where the data needs to go
+    return _mid;
+}
+
+// Only works for vectors populated using this method.
+int cls_vector_insert_in_asc_order(cls_vector_t *_vec, void *_data,
+                                   cls_fn_i_vp_vp_t _lessthan_fn) {
+    int _pos = cls_vector_asc_order_insert_pos(_vec, _data, _lessthan_fn);
+    if (_pos > -1) {
+        cls_vector_insert_at(_vec, _pos, _data);
+    }
+    return _pos;
+}
+
+// Only works for vectors populated using this method.
+int cls_vector_insert_in_desc_order(cls_vector_t *_vec, void *_data,
+                                    cls_fn_i_vp_vp_t _lessthan_fn) {
+    int _pos = cls_vector_desc_order_insert_pos(_vec, _data, _lessthan_fn);
+    if (_pos > -1) {
+        cls_vector_insert_at(_vec, _pos, _data);
+    }
+    return _pos;
+}
+
+void *cls_vector_pop_back(cls_vector_t *_vec) {
+    int _c = _vec->length;
+    void *_data = NULL;
+    if (_c > 0) {
+        _data = cls_vector_get(_vec, _c);
+        cls_vector_unset(_vec, _c);
+    }
+    return _data;
+}

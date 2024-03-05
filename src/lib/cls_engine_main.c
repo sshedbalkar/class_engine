@@ -37,6 +37,7 @@ cls_obj_static_t* cls_engine_static_init() {
     _hooks.free_fn = cls_free;
     cJSON_InitHooks(&_hooks);
     //
+    cls_util_static_init();
     cls_modules_static_init();
     cls_modules_static_register_module_type(&__base);
     cls_data_container_static_init();
@@ -62,6 +63,7 @@ int cls_engine_static_term() {
     cls_timer_static_term();
     cls_data_container_static_term();
     cls_modules_static_term();
+    cls_util_static_term();
     return 0;
 }
 
