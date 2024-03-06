@@ -9,6 +9,11 @@
 #include "cls_vector.h"
 #include "cls_memory.h"
 #include "cls_console.h"
+#include "cJSON.h"
+#ifdef CLS_DEBUG_LIVE
+#include <stdio.h>
+#include "cls_utils.h"
+#endif
 
 void cls_vector_init(cls_vector_t *v) {
     cls_vector_init_capacity(v, VECTOR_INIT_CAPACITY);
@@ -113,9 +118,11 @@ void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
         if (_vec->capacity == 0) _vec->capacity = 1;
         cls_vector_resize(_vec, _vec->capacity * 2);
     }
-    unsigned int _i;
-    for (_i = _vec->length - 1; _i > _index; --_i) {
-        _vec->items[_i + 1] = _vec->items[_i];
+    if (_vec->length > 0) {
+        int _i;
+        for (_i = _vec->length - 1; _i >= (int)_index; --_i) {
+            _vec->items[_i + 1] = _vec->items[_i];
+        }
     }
     _vec->items[_index] = _data;
     ++_vec->length;
@@ -124,7 +131,8 @@ void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
 // Only works for vectors populated using 'cls_vector_insert_in_asc_order()'
 int cls_vector_asc_order_insert_pos(cls_vector_t *_vec, void *_data,
                                     cls_fn_i_vp_vp_t _lessthan_fn) {
-    size_t _left = 0, _right = _vec->length - 1, _mid = 0;
+    if (_vec->length == 0) return 0;
+    int _left = 0, _right = _vec->length - 1, _mid = 0;
     while (_left <= _right) {
         _mid = _left + (_right - _left) / 2;
         if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
@@ -143,7 +151,8 @@ int cls_vector_asc_order_insert_pos(cls_vector_t *_vec, void *_data,
 // Only works for vectors populated using 'cls_vector_insert_in_desc_order()'
 int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
                                      cls_fn_i_vp_vp_t _lessthan_fn) {
-    size_t _left = 0, _right = _vec->length - 1, _mid = 0;
+    if (_vec->length == 0) return 0;
+    int _left = 0, _right = _vec->length - 1, _mid = 0;
     while (_left <= _right) {
         _mid = _left + (_right - _left) / 2;
         if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
@@ -180,11 +189,30 @@ int cls_vector_insert_in_desc_order(cls_vector_t *_vec, void *_data,
 }
 
 void *cls_vector_pop_back(cls_vector_t *_vec) {
-    int _c = _vec->length;
+    int _c = _vec->length - 1;
     void *_data = NULL;
-    if (_c > 0) {
-        _data = cls_vector_get(_vec, _c);
+    if (_c > -1) {
+        _data = _vec->items[_c];
         cls_vector_unset(_vec, _c);
     }
     return _data;
+}
+
+cJSON *cls_vector_serialize(cls_vector_t *_vec) {
+    cJSON *_vecJ = cJSON_CreateObject(), *_itemsJ, *_ptrJ;
+    int _l = _vec->length, _j;
+    cJSON_AddNumberToObject(_vecJ, "length", _l);
+    cJSON_AddNumberToObject(_vecJ, "capacity", _vec->capacity);
+    _itemsJ = cJSON_CreateArray();
+    cJSON_AddItemToObject(_vecJ, "items", _itemsJ);
+#ifdef CLS_DEBUG_LIVE
+    char *_buff = cls_alloc(16);
+    for (_j = 0; _j < _l; ++_j) {
+        snprintf(_buff, 16, "%p", _vec->items[_j]);
+        _ptrJ = cJSON_CreateString(_buff);
+        cJSON_AddItemToArray(_itemsJ, _ptrJ);
+    }
+    cls_free(_buff);
+#endif
+    return _vecJ;
 }

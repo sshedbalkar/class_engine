@@ -15,6 +15,8 @@ File: cls_vector.h
 #define VECTOR_INIT_CAPACITY 4
 #define VECTOR_REALLOC_ON_DELETE
 
+typedef struct cJSON cJSON;
+
 typedef struct cls_vector_t {
     size_t length;
     size_t capacity;
@@ -46,5 +48,7 @@ extern int cls_vector_asc_order_insert_pos(cls_vector_t *_vec, void *_data,
 extern int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
                                             cls_fn_i_vp_vp_t _lessthan_fn);
 extern void *cls_vector_pop_back(cls_vector_t *_vec);
+
+extern cJSON *cls_vector_serialize(cls_vector_t *_vec);
 
 #endif    // __CLS_VECTOR_H

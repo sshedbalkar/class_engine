@@ -7,7 +7,7 @@ All rights reserved
 #define __CLS_MEMORY_H
 
 #include <stddef.h>
-#ifdef CLS_DEBUG_LIVE
+#ifdef CLS_DEBUG
 typedef struct cJSON cJSON;
 #endif
 
@@ -25,7 +25,7 @@ extern void cls_memory_static_term();
 extern void* cls_alloc_new(size_t _size);
 extern void cls_free_new(void* _ptr);
 
-#ifdef CLS_DEBUG_LIVE
+#ifdef CLS_DEBUG
 extern char* cls_memory_serialize();
 #endif
 #endif    // __CLS_MEMORY_H
