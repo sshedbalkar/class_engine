@@ -55,24 +55,23 @@ cls_obj_static_t* cls_engine_static_init() {
     cls_modules_static_register_module_type(cls_ui_static_init());
     cls_events_reg_callback(CLS_EVT_QUIT, &__on_event_quit);
     //
-    cls_print("Serializing1\n");
+    // cls_print("Serializing1\n");
     // char* _memJson = cls_memory_serialize();
     // cls_print("Mem1: %s\n", _memJson);
-    // cls_free(_memJson);
-    void *_ptr1, *_ptr2, *_ptr3, *_ptr4;
-    _ptr1 = cls_alloc_new(1);
-    _ptr2 = cls_alloc_new(40);
-    _ptr3 = cls_alloc_new(35);
-    _ptr4 = cls_alloc_new(50);
-    cls_free_new(_ptr1);
-    cls_free_new(_ptr4);
-    cls_free_new(_ptr2);
+    // cls_free_new(_memJson);
+    // void *_ptr1, *_ptr2, *_ptr3, *_ptr4;
+    // _ptr1 = cls_alloc_new(1);
+    // _ptr2 = cls_alloc_new(40);
+    // _ptr3 = cls_alloc_new(35);
+    // _ptr4 = cls_alloc_new(50);
+    // cls_free_new(_ptr1);
+    // cls_free_new(_ptr4);
+    // cls_free_new(_ptr2);
     // cls_print("Serializing2\n");
     // _memJson = cls_memory_serialize();
     // cls_print("\nMem2: %s\n", _memJson);
-    // cls_free(_memJson);
     // cls_free_new(_memJson);
-    cls_free_new(_ptr3);
+    // cls_free_new(_ptr3);
     return &__base;
 }
 
@@ -85,10 +84,11 @@ int cls_engine_static_term() {
     cls_data_container_static_term();
     cls_modules_static_term();
     cls_util_static_term();
-    // cls_print("Serializing2\n");
-    // char* _memJson = cls_memory_serialize();
-    // cls_print("\nMem2: %s\n", _memJson);
-    // cls_free_new(_memJson);
+    cls_print("Serializing3\n");
+    char* _memJson = cls_memory_serialize();
+    cls_print("\nMem Report: %s\n", _memJson);
+    cls_print("memJson: %p\n", _memJson);
+    cls_free_new(_memJson);
     cls_memory_static_term();
     return 0;
 }

@@ -24,7 +24,7 @@
 
 ///////////////////////////////////////////////////////
 static unsigned int __page_count =
-    18;    // Should be the size of the array below
+    21;    // Should be the size of the array below
 static unsigned int __page_chunk_counts[] = {
     8,       // 2^0  = 1
     128,     // 2^1  = 2
@@ -33,17 +33,20 @@ static unsigned int __page_chunk_counts[] = {
     512,     // 2^4  = 16
     128,     // 2^5  = 32
     1024,    // 2^6  = 64
-    4,       // 2^7  = 128
-    4,       // 2^8  = 256
-    4,       // 2^9  = 512
-    1,       // 2^10 = 1024
-    8,       // 2^11 = 2048
-    2,       // 2^12 = 4096
-    2,       // 2^13 = 8192
-    1,       // 2^14 = 16384
-    2,       // 2^15 = 32768
-    2,       // 2^16 = 65536
+    16,      // 2^7  = 128
+    16,      // 2^8  = 256
+    16,      // 2^9  = 512
+    16,      // 2^10 = 1024
+    16,      // 2^11 = 2048
+    8,       // 2^12 = 4096
+    8,       // 2^13 = 8192
+    4,       // 2^14 = 16384
+    4,       // 2^15 = 32768
+    4,       // 2^16 = 65536
     2,       // 2^17 = 131072
+    1,       // 2^18 = 262144
+    1,       // 2^19 = 524288
+    1,       // 2^20 = 1048576
 };
 typedef struct __memory_raw_t {
     size_t size;
@@ -63,6 +66,7 @@ typedef struct __memory_page_t {
     unsigned int total_allocations;
     unsigned int total_frees;
     unsigned int multi_frees;
+    unsigned int max_in_use;
 #endif
 } __memory_page_t;
 
@@ -94,13 +98,14 @@ static __memory_page_t* __create_page(size_t _chunk_size,
     _page->total_allocations = 0;
     _page->total_frees = 0;
     _page->multi_frees = 0;
+    _page->max_in_use = 0;
 #endif
     cls_vector_init_capacity(&_page->free_list, _chunk_count);
     return _page;
 }
 
 static void __destroy_page(__memory_page_t* _page) {
-    cls_print("Freeing page: chunk: %d\n", _page->chunk_size);
+    // cls_print("Freeing page: chunk: %d\n", _page->chunk_size);
     cls_vector_free(&_page->free_list);
     _page->next_available = NULL;
     cls_free(_page->raw.memory);
@@ -131,33 +136,19 @@ void cls_memory_static_term() {
 }
 
 void* cls_alloc_new(size_t _size) {
+    if (_size < 1) cls_print("0 alloc request\n");
     unsigned int _mem_bank_id = cls_util_upper_twos_exponent(_size);
     void* _ptr = NULL;
     if ((int)_mem_bank_id < cls_vector_total(&__memory.mem_banks)) {
         __memory_page_t* _page =
             cls_vector_get(&__memory.mem_banks, _mem_bank_id);
         if (_page->chunk_allocated_count < _page->chunk_total) {
-            // if (_page->chunk_size == 2048) {
-            //     cls_print("2048: Allocated: %d, total:%d, Frees: %d\n",
-            //               _page->chunk_allocated_count, _page->chunk_total,
-            //               cls_vector_total(&_page->free_list));
-            // }
             if (cls_vector_total(&_page->free_list) > 0) {
                 _ptr = cls_vector_pop_back(&_page->free_list);
-                if (_page->chunk_size == 64) {
-                    //     cls_print("2048: Allocated from frees: %p\n", _ptr);
-                    cls_print(
-                        "Popped back from free, chunk: %d, length: %d, ptr: "
-                        "%p\n",
-                        _page->chunk_size, cls_vector_total(&_page->free_list),
-                        _ptr);
-                }
             } else {
                 _ptr = _page->next_available;
-                // if (_page->chunk_size == 2048) {
-                //     cls_print("2048: Allocated from next: %p\n", _ptr);
-                // }
                 _page->next_available += _page->chunk_size;
+                ++_page->max_in_use;
             }
             ++_page->chunk_allocated_count;
 #ifdef CLS_DEBUG
@@ -170,10 +161,6 @@ void* cls_alloc_new(size_t _size) {
             cls_print("[MEM]Page[%d * %d]: Out of memory\n", _page->chunk_size,
                       _page->chunk_total);
         }
-        // cls_print("Allocation: Ptr: %p, Request: %d, Bank:%d, remaining:
-        // %d\n",
-        //           _ptr, _size, _page->chunk_size,
-        //           (_page->chunk_total - _page->chunk_allocated_count));
     } else {
         cls_print("Mem request unavailable: %d, bank: %d\n", _size,
                   _mem_bank_id);
@@ -194,11 +181,12 @@ static bool_t __free_internal(__memory_page_t* _page, void* _ptr) {
         if (_addr % _page->chunk_size == 0) {
             int _id = cls_vector_insert_in_asc_order(&_page->free_list, _ptr,
                                                      __ptr_compare);
-            if (_page->chunk_size == 64) {
-                cls_print("Inserting into free, chunk: %d, len: %d, ptr: %p\n",
-                          _page->chunk_size,
-                          cls_vector_total(&_page->free_list), _ptr);
-            }
+            // if (_page->chunk_size == 64) {
+            //     cls_print("Inserting into free, chunk: %d, len: %d, ptr:
+            //     %p\n",
+            //               _page->chunk_size,
+            //               cls_vector_total(&_page->free_list), _ptr);
+            // }
             if (_id > -1) {
                 --_page->chunk_allocated_count;
 #ifdef CLS_DEBUG
@@ -248,12 +236,13 @@ void cls_free_new(void* _ptr) {
 static cJSON* __memory_raw_serialize(__memory_page_t* _page) {
     cJSON* _rawJ = cJSON_CreateObject();
     cJSON_AddNumberToObject(_rawJ, "size", _page->raw.size);
-#ifndef CLS_DEBUG_LIVE
+#ifdef CLS_DEBUG_LIVE
+#ifdef CLS_MEM_DETAILED_REPORT
     void* _ptr = _page->raw.memory;
     unsigned int _ci = 0;
-    char* _buff2 = cls_alloc_new(2048);
+    char* _buff2 = cls_alloc_new(8192);
     while (_ptr <= _page->chunk_last) {
-        _ci += snprintf(&_buff2[_ci], (2048 - _ci), "%p ", _ptr);
+        _ci += snprintf(&_buff2[_ci], (8192 - _ci), "%p ", _ptr);
         _ptr += _page->chunk_size;
     }
     _buff2[_ci - 1] = '\0';
@@ -261,6 +250,7 @@ static cJSON* __memory_raw_serialize(__memory_page_t* _page) {
     cls_free_new(_buff2);
 #else
     cJSON_AddStringToObject(_rawJ, "memory", "{}");
+#endif
 #endif
     return _rawJ;
 }
@@ -284,6 +274,7 @@ static cJSON* __memory_page_serialize(__memory_page_t* _page) {
                             _page->total_allocations);
     cJSON_AddNumberToObject(_pageJ, "total_frees", _page->total_frees);
     cJSON_AddNumberToObject(_pageJ, "multi_frees", _page->multi_frees);
+    cJSON_AddNumberToObject(_pageJ, "max_in_use", _page->max_in_use);
     cJSON_AddItemToObject(_pageJ, "free_list",
                           cls_vector_serialize(&_page->free_list));
     cJSON_AddItemToObject(_pageJ, "raw", __memory_raw_serialize(_page));
@@ -314,13 +305,15 @@ void* cls_alloc(size_t size) { return malloc(size); }
 void* cls_alloc_c(size_t _size, void* _context) {
     (void)_context;
     // cls_print("cls_alloc_c: %d", _size);
-    return malloc(_size);
+    // return malloc(_size);
+    return cls_alloc_new(_size);
 }
 
 void cls_free(void* ptr) { free(ptr); }
 void cls_free_c(void* _ptr, void* _context) {
     (void)_context;
-    free(_ptr);
+    // free(_ptr);
+    cls_free_new(_ptr);
 }
 
 void* cls_realloc(void* ptr, size_t new_size) { return realloc(ptr, new_size); }

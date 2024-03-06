@@ -50,12 +50,12 @@ add_compile_options(
     $<$<CONFIG:Debug>:-Wextra>
     # To get rid of warning: missing initializer for field ‘x’ of ‘struct y’ [-Wmissing-field-initializers]
     $<$<CONFIG:Debug>:-Wno-missing-field-initializers> 
-    
 )
 
 add_compile_definitions(
     $<$<CONFIG:Debug>:CLS_DEBUG>
     $<$<CONFIG:Debug>:CLS_DEBUG_LIVE>
+    # $<$<CONFIG:Debug>:CLS_MEM_DETAILED_REPORT>
 )
 
 include_directories(src/include)

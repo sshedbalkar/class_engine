@@ -80,13 +80,6 @@ void *cls_vector_get(cls_vector_t *v, unsigned int index) {
 
 void cls_vector_delete(cls_vector_t *v, unsigned int index) {
     if (index >= v->length) return;
-
-    // v->items[index] = NULL;
-    // int i;
-    // for (i = 0; i < v->length - 1; i++) {
-    //     v->items[i] = v->items[i + 1];
-    //     v->items[i + 1] = NULL;
-    // }
     unsigned int i;
     for (i = index; i < v->length - 1; ++i) {
         v->items[i] = v->items[i + 1];
