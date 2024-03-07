@@ -10,6 +10,7 @@
 #include "cls_memory.h"
 #include "cls_console.h"
 #include "cJSON.h"
+#include <math.h>
 #ifdef CLS_DEBUG_LIVE
 #include <stdio.h>
 #include "cls_utils.h"
@@ -124,30 +125,27 @@ void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
 // Only works for vectors populated using 'cls_vector_insert_in_asc_order()'
 int cls_vector_asc_order_insert_pos(cls_vector_t *_vec, void *_data,
                                     cls_fn_i_vp_vp_t _lessthan_fn) {
-    if (_vec->length == 0) return 0;
-    int _left = 0, _right = _vec->length - 1, _mid = 0;
+    int _left = 0, _right = _vec->length - 1, _mid;
     while (_left <= _right) {
-        _mid = _left + (_right - _left) / 2;
+        _mid = floor(((double)(_right + _left)) / 2.0);
         if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
             _left = _mid + 1;
         } else if (_lessthan_fn(_data, _vec->items[_mid]) == CLS_TRUE) {
             _right = _mid - 1;
         } else {
-            // Data already exists
             return -1;
         }
     }
     // We found the index where the data needs to go
-    return _mid;
+    return _left;
 }
 
 // Only works for vectors populated using 'cls_vector_insert_in_desc_order()'
 int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
                                      cls_fn_i_vp_vp_t _lessthan_fn) {
-    if (_vec->length == 0) return 0;
-    int _left = 0, _right = _vec->length - 1, _mid = 0;
+    int _left = 0, _right = _vec->length - 1, _mid;
     while (_left <= _right) {
-        _mid = _left + (_right - _left) / 2;
+        _mid = floor(((double)(_right + _left)) / 2.0);
         if (_lessthan_fn(_vec->items[_mid], _data) == CLS_TRUE) {
             _right = _mid - 1;
         } else if (_lessthan_fn(_data, _vec->items[_mid]) == CLS_TRUE) {
@@ -158,7 +156,7 @@ int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
         }
     }
     // We found the index where the data needs to go
-    return _mid;
+    return _left;
 }
 
 // Only works for vectors populated using this method.

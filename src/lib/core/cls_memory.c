@@ -30,7 +30,7 @@ static unsigned int __page_chunk_counts[] = {
     128,     // 2^1  = 2
     256,     // 2^2  = 4
     256,     // 2^3  = 8
-    512,     // 2^4  = 16
+    1024,    // 2^4  = 16
     128,     // 2^5  = 32
     1024,    // 2^6  = 64
     16,      // 2^7  = 128
@@ -142,9 +142,9 @@ void cls_memory_static_term() {
 void* cls_alloc_new(size_t _size) {
     if (_size < 1) cls_print("0 alloc request\n");
     unsigned int _mem_bank_id = cls_util_upper_twos_exponent(_size);
-    if (_mem_bank_id == 13) {
-        cls_print("Alloc request: bank: %d, size:%d\n", _mem_bank_id, _size);
-    }
+    // if (_mem_bank_id == 13) {
+    //     cls_print("Alloc request: bank: %d, size:%d\n", _mem_bank_id, _size);
+    // }
     void* _ptr = NULL;
     if ((int)_mem_bank_id < cls_vector_total(&__memory.mem_banks)) {
         __memory_page_t* _page =
@@ -157,9 +157,9 @@ void* cls_alloc_new(size_t _size) {
                 _page->next_available += _page->chunk_size;
                 ++_page->max_in_use;
             }
-            if (_page->chunk_size == 8192) {
-                cls_print("Allocated: %d, %p\n", _page->chunk_size, _ptr);
-            }
+            // if (_page->chunk_size == 8192) {
+            //     cls_print("Allocated: %d, %p\n", _page->chunk_size, _ptr);
+            // }
             ++_page->chunk_allocated_count;
 #ifdef CLS_DEBUG
             ++_page->total_allocations;

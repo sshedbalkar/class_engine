@@ -20,7 +20,6 @@ extern int cls_util_ptr_to_str(void* _ptr);
 extern unsigned int cls_util_upper_powerof_two(unsigned int v);
 extern unsigned int cls_util_round(double number);
 extern unsigned int cls_util_upper_twos_exponent(unsigned int _val);
-
-// extern unsigned int __id;
+extern int cls_rand_in_range(int _lower, int _upper);
 
 #endif    // __CLS_UTILS_H
