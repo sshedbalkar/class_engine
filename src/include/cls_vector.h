@@ -50,5 +50,9 @@ extern int cls_vector_desc_order_insert_pos(cls_vector_t *_vec, void *_data,
 extern void *cls_vector_pop_back(cls_vector_t *_vec);
 
 extern cJSON *cls_vector_serialize(cls_vector_t *_vec);
+extern cJSON *cls_vector_serialize_compact(cls_vector_t *_vec);
+extern void cls_vector_serialize_compact_no_alloc(cls_vector_t *_vec,
+                                                  char *_buff,
+                                                  unsigned int _size);
 
 #endif    // __CLS_VECTOR_H

@@ -24,6 +24,7 @@ extern void cls_memory_static_init();
 extern void cls_memory_static_term();
 extern void* cls_alloc_new(size_t _size);
 extern void cls_free_new(void* _ptr);
+extern int cls_memory_free_list_null_check();
 
 #ifdef CLS_DEBUG
 extern char* cls_memory_serialize();
