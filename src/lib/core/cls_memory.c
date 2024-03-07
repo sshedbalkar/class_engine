@@ -274,10 +274,10 @@ void cls_free_new(void* _ptr) {
 }
 
 int cls_memory_free_list_null_check() {
-    unsigned int _i, _c = cls_vector_total(&__memory.mem_banks);
+    unsigned int _i, _c = __memory.mem_banks.length;
     __memory_page_t* _page;
     for (_i = 0; _i < _c; ++_i) {
-        _page = cls_vector_get(&__memory.mem_banks, _i);
+        _page = __memory.mem_banks.items[_i];
         if (__has_null(&_page->free_list)) {
             return 1;
         }
@@ -325,14 +325,11 @@ static cJSON* __memory_page_serialize(__memory_page_t* _page) {
     cJSON_AddStringToObject(_pageJ, "chunk_last", _buff);
     cJSON_AddNumberToObject(_pageJ, "total_allocations",
                             _page->total_allocations);
-    if (cls_memory_free_list_null_check()) CLS_CRASH_ME();
     cJSON_AddNumberToObject(_pageJ, "total_frees", _page->total_frees);
     cJSON_AddNumberToObject(_pageJ, "multi_frees", _page->multi_frees);
     cJSON_AddNumberToObject(_pageJ, "max_in_use", _page->max_in_use);
-    if (cls_memory_free_list_null_check()) CLS_CRASH_ME();
     cJSON_AddItemToObject(_pageJ, "free_list",
                           cls_vector_serialize(&_page->free_list));
-    if (cls_memory_free_list_null_check()) CLS_CRASH_ME();
     cJSON_AddItemToObject(_pageJ, "raw", __memory_raw_serialize(_page));
     return _pageJ;
 }
