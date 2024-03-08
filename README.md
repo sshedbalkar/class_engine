@@ -23,7 +23,7 @@ Class Engine uses the following  dependencies
 | Dependency | Version |Comment|
 |-----------|----------|-------|
 |Ubuntu|Ubuntu 22.04|
-|coredumpctl|249.11-0ubuntu3.12|To analyze core dump files on `ubuntu`|
+|[coredumpctl](https://github.com/sshedbalkar/class_engine?tab=readme-ov-file#coredumpctl)|249.11-0ubuntu3.12|To analyze core dump files on `ubuntu`|
 |snap|2.61.1|For installing `valgrind`|
 |alien|8.95.5|For installing `rpm` packages on `ubuntu`|
 
@@ -49,6 +49,7 @@ sysctl -n kernel.core_pattern
     `coredumpctl dump [PID|Name of the xecutable|Time of crash]`
 
 - Debug a crash
+
     `coredumpctl debug [PID|Name of the xecutable|Time of crash]`
 
 ### GDB
