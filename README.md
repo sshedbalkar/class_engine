@@ -17,7 +17,7 @@ Class Engine uses the following  dependencies
 |libsdl2-ttf-dev|2.20.1+dfsg-2|
 |pkg-config|1.8.1|
 |valgrind|3.22.0|
-|valgrind-devel|3.22.0|Download [valgrind-client-headers](ttps://rpmfind.net/linux/RPM/opensuse/15.6/noarch/valgrind-client-headers-3.22.0-150600.1.1.noarch.html), and [valgrind-devel](https://rpmfind.net/linux/RPM/opensuse/tumbleweed/x86_64/valgrind-devel-3.22.0-2.1.x86_64.html) (Requires `alien` for rpm installation on `ubuntu`)|
+|valgrind-devel|3.22.0|Download [valgrind-client-headers](https://rpmfind.net/linux/RPM/opensuse/15.6/noarch/valgrind-client-headers-3.22.0-150600.1.1.noarch.html), and [valgrind-devel](https://rpmfind.net/linux/RPM/opensuse/tumbleweed/x86_64/valgrind-devel-3.22.0-2.1.x86_64.html) (Requires `alien` for rpm installation on `ubuntu`)|
 
 ### Optional
 | Dependency | Version |Comment|
