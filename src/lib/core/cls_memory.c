@@ -16,6 +16,7 @@
 
 #ifdef CLS_DEBUG
 #include "cJSON.h"
+#include <valgrind/valgrind.h>
 #ifdef CLS_DEBUG_LIVE
 #include <stdio.h>
 #endif
@@ -316,6 +317,7 @@ void* cls_alloc_c(size_t _size, void* _context) {
     (void)_context;
     // cls_print("cls_alloc_c: %d", _size);
     // return malloc(_size);
+    if (RUNNING_ON_VALGRIND) return malloc(_size);
     return cls_alloc_new(_size);
 }
 
@@ -323,6 +325,7 @@ void cls_free(void* ptr) { free(ptr); }
 void cls_free_c(void* _ptr, void* _context) {
     (void)_context;
     // free(_ptr);
+    if (RUNNING_ON_VALGRIND) return free(_ptr);
     cls_free_new(_ptr);
 }
 
