@@ -30,16 +30,26 @@ Class Engine uses the following  dependencies
 ## Tool specific info
 ### Coredumpctl
 #### Installation
-- Install `coredumpctl`
+- Install 
+
+    `coredumpctl`
+
 - Make sure Output of the following command is similar
 ```sh
 sysctl -n kernel.core_pattern
 |/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h
 ```
 #### Useful commands
-- List all core dump files: `coredumpctl`
-- Dump core file: `coredumpctl dump [PID|Name of the xecutable|Time of crash]`
-- Debug a crash: `coredumpctl debug [PID|Name of the xecutable|Time of crash]`
+- List all core dump files
+
+    `coredumpctl`
+
+- Dump core file
+
+    `coredumpctl dump [PID|Name of the xecutable|Time of crash]`
+
+- Debug a crash
+    `coredumpctl debug [PID|Name of the xecutable|Time of crash]`
 
 ### GDB
 [Reference](docs/GDB_README.md)

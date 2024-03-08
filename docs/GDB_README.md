@@ -185,13 +185,17 @@ to inspect your program and find and fix the bugs.
     `bt full`
 
 7. Stack Trace
+
     `bt`
 
 8. Info on running threads
+
     `info threads`
 
 9. Stack trace of all threads
+
     `thread apply all bt all`
 
 10. Full stack trace of all threads
+
     `thread apply all bt full`
