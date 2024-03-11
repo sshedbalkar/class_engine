@@ -55,6 +55,7 @@
         "cls_error.h": "c",
         "cls_modules.h": "c",
         "math.h": "c",
-        "cjson.h": "c"
+        "cjson.h": "c",
+        "valgrind.h": "c"
     }
 }

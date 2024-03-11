@@ -144,10 +144,9 @@ int cls_engine_run(cls_engine_t* eng) {
 char _buff2[1024];
 const char* cls_engine_serialize(cls_engine_t* _eng) {
     cJSON* _root = cJSON_CreateObject();
-    cJSON* _base = cJSON_CreateObject();
-    const char* _name = cls_module_type_to_string(_eng->base->type);
-    cls_print("Engine: %s\n", _name);
-    cJSON_AddStringToObject(_base, "base",
+    // const char* _name = cls_module_type_to_string(_eng->base->type);
+    // cls_print("Engine: %s\n", _name);
+    cJSON_AddStringToObject(_root, "base",
                             cls_module_type_to_string(_eng->base->type));
     cJSON_AddItemToObject(_root, "submodules",
                           cls_modules_serialize(&_eng->submodules));

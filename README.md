@@ -55,6 +55,11 @@ sysctl -n kernel.core_pattern
 ### GDB
 [Reference](docs/GDB_README.md)
 
+### Valgrind
+```sh
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -v ./executable exampleParam1
+```
+
 ### Useful Links
 [Go to page](docs/LINKS_README.md)
 

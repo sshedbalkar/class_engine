@@ -7,8 +7,11 @@
         "type": "cppdbg",
         "request": "launch",
         "name": "Custom Launch the Program",
-        "program": "${workspaceRoot}/bin/32/Debug/Test2",
+        "program": "${workspaceRoot}/bin/64/Debug/Test2",
         "args": [],
+        "linux": {
+            "args": []
+        },
         "cwd": "${workspaceRoot}",
         "presentation": {
             "hidden": false,
@@ -18,6 +21,7 @@
         "preLaunchTask":"",
         "postDebugTask":"",
         "externalConsole": false,
-        
+        "internalConsoleOptions":"openOnFirstSessionStart"
+
     }]
 }

@@ -47,7 +47,7 @@
 			"label": "cpp_format_file",
 			"type": "shell",
 			"linux": {
-				"command": "${workspaceRoot}/scripts/linux/file_format.sh",
+				"command": "${workspaceRoot}/scripts/linux/file_format.sh"
 			},
 			"options": {
 				"cwd": "${workspaceRoot}"
@@ -65,6 +65,32 @@
 				"clear": false
 			},
 			"problemMatcher": "$gcc"
+		},
+		{
+			"type": "shell",
+			"label": "Valgrind_run",
+			"linux": {
+				"command": "valgrind"
+			},
+			"options": {
+				"cwd": "${workspaceRoot}/bin/64/Debug/"
+			},
+			"args": [
+				"--leak-check=full --show-leak-kinds=all --track-origins=yes -v ./Test2"
+			],
+			"detail": "Valgrind run task",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
 		}
 	]
 }

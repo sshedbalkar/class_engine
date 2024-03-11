@@ -36,7 +36,7 @@ static unsigned int __page_chunk_counts[] = {
     1024,    // 2^6  = 64
     16,      // 2^7  = 128
     16,      // 2^8  = 256
-    16,      // 2^9  = 512
+    32,      // 2^9  = 512
     16,      // 2^10 = 1024
     16,      // 2^11 = 2048
     8,       // 2^12 = 4096
@@ -177,6 +177,7 @@ void* cls_alloc_new(size_t _size) {
                   _mem_bank_id);
         _ptr = cls_alloc(_size);
     }
+    VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
     return _ptr;
 }
 
@@ -227,6 +228,7 @@ static bool_t __free_internal(__memory_page_t* _page, void* _ptr) {
 }
 
 void cls_free_new(void* _ptr) {
+    VALGRIND_FREELIKE_BLOCK(_ptr, 0);
     unsigned int _i, _c = cls_vector_total(&__memory.mem_banks);
     bool_t _freed = CLS_FALSE;
     // cls_print("Deallocation: %p\n", _ptr);
@@ -317,7 +319,7 @@ void* cls_alloc_c(size_t _size, void* _context) {
     (void)_context;
     // cls_print("cls_alloc_c: %d", _size);
     // return malloc(_size);
-    if (RUNNING_ON_VALGRIND) return malloc(_size);
+    // if (RUNNING_ON_VALGRIND) return malloc(_size);
     return cls_alloc_new(_size);
 }
 
@@ -325,7 +327,7 @@ void cls_free(void* ptr) { free(ptr); }
 void cls_free_c(void* _ptr, void* _context) {
     (void)_context;
     // free(_ptr);
-    if (RUNNING_ON_VALGRIND) return free(_ptr);
+    // if (RUNNING_ON_VALGRIND) return free(_ptr);
     cls_free_new(_ptr);
 }
 
