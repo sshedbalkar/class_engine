@@ -13,7 +13,7 @@
 #include <math.h>
 #ifdef CLS_DEBUG_LIVE
 #include <stdio.h>
-#include "cls_utils.h"
+#include "cls_defines.h"
 #endif
 
 void cls_vector_init(cls_vector_t *v) {
@@ -34,7 +34,7 @@ int cls_vector_total(cls_vector_t *v) { return v->length; }
 int cls_vector_capacity(cls_vector_t *v) { return v->capacity; }
 
 static void cls_vector_resize(cls_vector_t *v, size_t capacity) {
-#ifdef DEBUG_ON
+#ifdef CLS_DEBUG
     cls_print("cls_vector_resize: %d to %d\n", v->capacity, capacity);
 #endif
 
@@ -189,21 +189,44 @@ void *cls_vector_pop_back(cls_vector_t *_vec) {
     return _data;
 }
 
-cJSON *cls_vector_serialize(cls_vector_t *_vec) {
-    cJSON *_vecJ = cJSON_CreateObject(), *_itemsJ, *_ptrJ;
-    int _l = _vec->length, _j;
-    cJSON_AddNumberToObject(_vecJ, "length", _l);
-    cJSON_AddNumberToObject(_vecJ, "capacity", _vec->capacity);
-    _itemsJ = cJSON_CreateArray();
-    cJSON_AddItemToObject(_vecJ, "items", _itemsJ);
+cJSON *cls_vector_serialize_compact(cls_vector_t *_vec) {
+    cJSON *_itemsJ = cJSON_CreateArray();
 #ifdef CLS_DEBUG_LIVE
+    cJSON *_ptrJ;
+    int _j, _l = _vec->length;
     char *_buff = cls_alloc(16);
     for (_j = 0; _j < _l; ++_j) {
+        // if (_vec->items[_j] == NULL) {
+        //     cls_print("Len: %d, Cap: %d, inserting null\n", _l,
+        //     _vec->capacity); CLS_CRASH_ME();
+        // }
         snprintf(_buff, 16, "%p", _vec->items[_j]);
         _ptrJ = cJSON_CreateString(_buff);
         cJSON_AddItemToArray(_itemsJ, _ptrJ);
     }
     cls_free(_buff);
 #endif
+    //
+    return _itemsJ;
+}
+
+void cls_vector_serialize_compact_no_alloc(cls_vector_t *_vec, char *_buff,
+                                           unsigned int _size) {
+    unsigned int _l = _vec->length, _j, _count = 1;
+    _buff[0] = '[';
+    --_size;
+    for (_j = 0; _j < _l; ++_j) {
+        _count += snprintf(&_buff[_count], _size - _count - 1, "%p, ",
+                           _vec->items[_j]);
+    }
+    _buff[_count - 2] = ']';
+    _buff[_count - 1] = '\0';
+}
+
+cJSON *cls_vector_serialize(cls_vector_t *_vec) {
+    cJSON *_vecJ = cJSON_CreateObject();
+    cJSON_AddNumberToObject(_vecJ, "length", _vec->length);
+    cJSON_AddNumberToObject(_vecJ, "capacity", _vec->capacity);
+    cJSON_AddItemToObject(_vecJ, "items", cls_vector_serialize_compact(_vec));
     return _vecJ;
 }
