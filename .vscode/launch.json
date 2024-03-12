@@ -6,16 +6,16 @@
     "configurations": [{
         "type": "cppdbg",
         "request": "launch",
-        "name": "Custom Launch the Program",
+        "name": "Debug Test2",
         "program": "${workspaceRoot}/bin/64/Debug/Test2",
         "args": [],
         "linux": {
             "args": []
         },
-        "cwd": "${workspaceRoot}",
+        "cwd": "${workspaceRoot}/bin/64/Debug",
         "presentation": {
             "hidden": false,
-            "group": "",
+            "group": "test",
             "order": 1
         },
         "preLaunchTask":"",
