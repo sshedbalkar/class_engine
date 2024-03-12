@@ -155,6 +155,7 @@ int __has_null(cls_vector_t* _vec) {
 void cls_memory_static_init() {
     unsigned int _i, _chunkSz;
     __memory_page_t* _page;
+    __memory.pool_count = 0;
     for (_i = 0; _i < __page_count; ++_i) {
         ++__memory.pool_count;
         cls_vector_init(&__memory.pool[_i]);
@@ -192,7 +193,7 @@ void* cls_alloc_new(size_t _size) {
     // else if (_size < 1)
     //     cls_print("0 alloc request\n");
     unsigned int _pool_id = cls_util_upper_twos_exponent(_size);
-    cls_print("Alloc request: bank: %d, size:%d\n", _pool_id, _size);
+    // cls_print("Alloc request: bank: %d, size:%d\n", _pool_id, _size);
     // if (_pool_id == 13) {
     // }
     void* _ptr = NULL;
@@ -241,15 +242,16 @@ void* cls_alloc_new(size_t _size) {
             _page = __create_page(__charSz * (1 << _pool_id),
                                   __page_chunk_counts[_pool_id]);
             cls_vector_add(_vec, _page);
-            cls_print("Adding a new page, chunk: %d, count: %d, new len: %d\n",
-                      (1 << _pool_id), _c, cls_vector_total(_vec));
+            // cls_print("Adding a new page, chunk: %d, count: %d, new len:
+            // %d\n",
+            //   (1 << _pool_id), _c, cls_vector_total(_vec));
             return cls_alloc_new(_size);
         }
     } else {
         cls_print("Mem request unavailable: %d, bank: %d\n", _size, _pool_id);
         _ptr = cls_alloc(_size);
     }
-    VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
+    // VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
     return _ptr;
 }
 
@@ -305,7 +307,7 @@ static bool_t __free_internal(__memory_page_t* _page, void* _ptr) {
 }
 
 void cls_free_new(void* _ptr) {
-    VALGRIND_FREELIKE_BLOCK(_ptr, 0);
+    // VALGRIND_FREELIKE_BLOCK(_ptr, 0);
     unsigned int _i, _c = __memory.pool_count, _j, _d;
     bool_t _freed = CLS_FALSE;
     if (_ptr != NULL) {
@@ -315,7 +317,7 @@ void cls_free_new(void* _ptr) {
             _vec = &__memory.pool[_i];
             _d = cls_vector_total(_vec);
             for (_j = 0; _j < _d; ++_j) {
-                _page = cls_vector_get(_vec, _i);
+                _page = cls_vector_get(_vec, _j);
                 if (_page != NULL && __free_internal(_page, _ptr) == CLS_TRUE) {
                     _freed = CLS_TRUE;
                     _j = _d;
@@ -416,8 +418,8 @@ char* cls_memory_serialize() {
         cJSON_AddNumberToObject(_vecJ, "size", _d);
         _pagesJ = cJSON_CreateArray();
         cJSON_AddItemToObject(_vecJ, "pages", _pagesJ);
-        for (_j = 0; _j < _d; ++_d) {
-            _page = cls_vector_get(_vec, _i);
+        for (_j = 0; _j < _d; ++_j) {
+            _page = cls_vector_get(_vec, _j);
             if (_page != NULL) {
                 _pageJ = __memory_page_serialize(_page);
                 cJSON_AddItemToArray(_pagesJ, _pageJ);
