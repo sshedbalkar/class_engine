@@ -76,7 +76,7 @@
 				"cwd": "${workspaceRoot}/bin/64/Debug/"
 			},
 			"args": [
-				"--leak-check=full --show-leak-kinds=all --track-origins=yes -v ./Test2"
+				"--leak-check=full", "--show-leak-kinds=all", "--track-origins=yes", "-v", "./Test2"
 			],
 			"detail": "Valgrind run task",
 			"presentation": {
@@ -87,10 +87,31 @@
 				"panel": "shared",
 				"showReuseMessage": false,
 				"clear": false
+			}
+		},
+		{
+			"label": "Process_kill",
+			"type": "process",
+			"linux": {
+				"command": "${workspaceRoot}/scripts/linux/proc_term.sh",
+				"options": {
+					"cwd": "${workspaceRoot}/bin/64/Debug/"
+				}
 			},
-			"problemMatcher": [
-				"$gcc"
-			]
+			"args": [
+				"Test2"
+			],
+			"group": "test",
+			"detail": "Terminate Application",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"clear": false
+			}
 		}
 	]
 }

@@ -22,33 +22,57 @@
 #include <stdio.h>
 #endif
 #endif
-///////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////
+/*                     STRUCTURE
+ *
+ *
+ *                    APPLICATION           pool_t = memory_pool_t
+ *                         |                     P = memory_page_t
+ *                         v                     R = memory_raw_t
+ *                      memory_t                 M = memory
+ *                         |
+ *                         v
+ *      ----------------------------------------
+ *      |            |            |            |
+ *      v            v            v            v
+ *  [*pool_t      *pool_t      *pool_t      *pool_t]
+ *      |            |            |            |
+ *      v            v            v            v
+ *  ---------    ---------    ---------    ---------
+ *  |   |   |    |   |   |    |   |   |    |   |   |
+ *  v   v   v    v   v   v    v   v   v    v   v   v
+ * [*P  *P  *P] [*P  *P  *P] [*P  *P  *P] [*P  *P  *P]
+ *  |   |   |    |   |   |    |   |   |    |   |   |
+ *  v   v   v    v   v   v    v   v   v    v   v   v
+ *  R   R   R    R   R   R    R   R   R    R   R   R
+ *  |   |   |    |   |   |    |   |   |    |   |   |
+ *  v   v   v    v   v   v    v   v   v    v   v   v
+ *  *M  *M  *M   *M  *M  *M   *M  *M  *M   *M  *M  *M
+ */
+#define __POOL_COUNT 28
 static unsigned int __page_count =
     21;    // Should be the size of the array below
 static unsigned int __page_chunk_counts[] = {
-    8,       // 2^0  = 1
-    128,     // 2^1  = 2
-    128,     // 2^2  = 4
-    128,     // 2^3  = 8
-    128,     // 2^4  = 16
-    128,     // 2^5  = 32
-    1024,    // 2^6  = 64
-    16,      // 2^7  = 128
-    16,      // 2^8  = 256
-    32,      // 2^9  = 512
-    16,      // 2^10 = 1024
-    16,      // 2^11 = 2048
-    8,       // 2^12 = 4096
-    8,       // 2^13 = 8192
-    4,       // 2^14 = 16384
-    4,       // 2^15 = 32768
-    4,       // 2^16 = 65536
-    2,       // 2^17 = 131072
-    1,       // 2^18 = 262144
-    1,       // 2^19 = 524288
-    1,       // 2^20 = 1048576
+    8,      // 2^0  = 1
+    128,    // 2^1  = 2
+    128,    // 2^2  = 4
+    128,    // 2^3  = 8
+    128,    // 2^4  = 16
+    128,    // 2^5  = 32
+    512,    // 2^6  = 64
+    16,     // 2^7  = 128
+    16,     // 2^8  = 256
+    16,     // 2^9  = 512
+    16,     // 2^10 = 1024
+    16,     // 2^11 = 2048
+    8,      // 2^12 = 4096
+    8,      // 2^13 = 8192
+    4,      // 2^14 = 16384
+    2,      // 2^15 = 32768
+    2,      // 2^16 = 65536
+    2,      // 2^17 = 131072
+    1,      // 2^18 = 262144
+    1,      // 2^19 = 524288
+    1,      // 2^20 = 1048576
 };
 typedef struct __memory_raw_t {
     size_t size;
@@ -72,8 +96,13 @@ typedef struct __memory_page_t {
 #endif
 } __memory_page_t;
 
+typedef struct __memory_pool_t {
+    cls_vector_t pages;
+} __memory_pool_t;
+
 typedef struct __memory_t {
-    cls_vector_t mem_banks;
+    cls_vector_t pool[__POOL_COUNT];
+    unsigned int pool_count;
 #ifdef CLS_DEBUG
     unsigned int total_allocations;
     unsigned int total_frees;
@@ -126,11 +155,12 @@ int __has_null(cls_vector_t* _vec) {
 void cls_memory_static_init() {
     unsigned int _i, _chunkSz;
     __memory_page_t* _page;
-    cls_vector_init_capacity(&__memory.mem_banks, __page_count);
     for (_i = 0; _i < __page_count; ++_i) {
+        ++__memory.pool_count;
+        cls_vector_init(&__memory.pool[_i]);
         _chunkSz = 1 << _i;
         _page = __create_page(__charSz * _chunkSz, __page_chunk_counts[_i]);
-        cls_vector_add(&__memory.mem_banks, _page);
+        cls_vector_add(&__memory.pool[_i], _page);
     }
 #ifdef CLS_DEBUG
     __memory.total_allocations = 0;
@@ -139,14 +169,21 @@ void cls_memory_static_init() {
 }
 
 void cls_memory_static_term() {
-    int _i, _c = cls_vector_total(&__memory.mem_banks);
+    int _i, _c = __memory.pool_count, _j, _d;
+    cls_vector_t* _vec;
     __memory_page_t* _page;
-    for (_i = _c - 1; _i > -1; --_i) {
-        _page = cls_vector_get(&__memory.mem_banks, _i);
-        __destroy_page(_page);
-        cls_vector_replace(&__memory.mem_banks, _i, NULL);
+    for (_i = 0; _i < _c; ++_i) {
+        _vec = &__memory.pool[_i];
+        _d = cls_vector_total(_vec);
+        for (_j = 0; _j < _d; ++_j) {
+            _page = cls_vector_get(_vec, _j);
+            if (_page != NULL) {
+                __destroy_page(_page);
+                cls_vector_replace(_vec, _i, NULL);
+            }
+        }
+        cls_vector_free(_vec);
     }
-    cls_vector_free(&__memory.mem_banks);
 }
 
 void* cls_alloc_new(size_t _size) {
@@ -154,52 +191,62 @@ void* cls_alloc_new(size_t _size) {
     //     return cls_alloc(_size);
     // else if (_size < 1)
     //     cls_print("0 alloc request\n");
-    unsigned int _mem_bank_id = cls_util_upper_twos_exponent(_size);
-    // if (_mem_bank_id == 13) {
-    //     cls_print("Alloc request: bank: %d, size:%d\n", _mem_bank_id, _size);
+    unsigned int _pool_id = cls_util_upper_twos_exponent(_size);
+    cls_print("Alloc request: bank: %d, size:%d\n", _pool_id, _size);
+    // if (_pool_id == 13) {
     // }
     void* _ptr = NULL;
-    if ((int)_mem_bank_id < cls_vector_total(&__memory.mem_banks)) {
-        __memory_page_t* _page =
-            cls_vector_get(&__memory.mem_banks, _mem_bank_id);
-        if (_page->chunk_allocated_count < _page->chunk_total) {
-            if (cls_vector_total(&_page->free_list) > 0) {
-                _ptr = cls_vector_pop_back(&_page->free_list);
+    if (_pool_id < __memory.pool_count) {
+        cls_vector_t* _vec = &__memory.pool[_pool_id];
+        int _i, _c = cls_vector_total(_vec);
+        __memory_page_t* _page;
+        for (_i = 0; _i < _c; ++_i) {
+            _page = cls_vector_get(_vec, _i);
+            if (_page != NULL &&
+                _page->chunk_allocated_count < _page->chunk_total) {
+                if (cls_vector_total(&_page->free_list) > 0) {
+                    _ptr = cls_vector_pop_back(&_page->free_list);
 
-                // char* _buff = cls_alloc(65536);
-                // cls_vector_serialize_compact_no_alloc(&_page->free_list,
-                // _buff,
-                //                                       65536);
-                // cls_print("Allocated, Ptr: %p, Free: %s\n", _ptr, _buff);
-                // cls_free(_buff);
-                if (__has_null(&_page->free_list)) {
-                    cls_print("1 Chunk: %d, found null\n", _page->chunk_size);
-                    CLS_CRASH_ME();
+                    // char* _buff = cls_alloc(65536);
+                    // cls_vector_serialize_compact_no_alloc(&_page->free_list,
+                    // _buff,
+                    //                                       65536);
+                    // cls_print("Allocated, Ptr: %p, Free: %s\n", _ptr, _buff);
+                    // cls_free(_buff);
+                    if (__has_null(&_page->free_list)) {
+                        cls_print("1 Chunk: %d, found null\n",
+                                  _page->chunk_size);
+                        CLS_CRASH_ME();
+                    }
+                } else {
+                    _ptr = _page->next_available;
+                    _page->next_available += _page->chunk_size;
+                    ++_page->max_in_use;
                 }
-            } else {
-                _ptr = _page->next_available;
-                _page->next_available += _page->chunk_size;
-                ++_page->max_in_use;
-            }
-            // if (_page->chunk_size == 8192) {
-            //     cls_print("Allocated: %d, %p\n", _page->chunk_size, _ptr);
-            // }
-            ++_page->chunk_allocated_count;
+                ++_page->chunk_allocated_count;
 #ifdef CLS_DEBUG
-            ++_page->total_allocations;
-            ++__memory.total_allocations;
+                ++_page->total_allocations;
+                ++__memory.total_allocations;
 #endif
-        } else {
-            // cls_error_set(CLS_ERROR_FATAL, CLS_ERR_ID_MEM_PAGE_OUT_OF_MEMORY,
+            }
+        }
+        if (_ptr == NULL) {
+            // cls_error_set(CLS_ERROR_FATAL,
+            // CLS_ERR_ID_MEM_PAGE_OUT_OF_MEMORY,
             //               "Out of memory");
             // cls_print("[MEM]Page[%d * %d]: Out of memory\n",
             // _page->chunk_size,
             //          _page->chunk_total);
-            _ptr = cls_alloc(_size);
+            // _ptr = cls_alloc(_size);
+            _page = __create_page(__charSz * (1 << _pool_id),
+                                  __page_chunk_counts[_pool_id]);
+            cls_vector_add(_vec, _page);
+            cls_print("Adding a new page, chunk: %d, count: %d, new len: %d\n",
+                      (1 << _pool_id), _c, cls_vector_total(_vec));
+            return cls_alloc_new(_size);
         }
     } else {
-        cls_print("Mem request unavailable: %d, bank: %d\n", _size,
-                  _mem_bank_id);
+        cls_print("Mem request unavailable: %d, bank: %d\n", _size, _pool_id);
         _ptr = cls_alloc(_size);
     }
     VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
@@ -259,14 +306,21 @@ static bool_t __free_internal(__memory_page_t* _page, void* _ptr) {
 
 void cls_free_new(void* _ptr) {
     VALGRIND_FREELIKE_BLOCK(_ptr, 0);
-    unsigned int _i, _c = cls_vector_total(&__memory.mem_banks);
+    unsigned int _i, _c = __memory.pool_count, _j, _d;
     bool_t _freed = CLS_FALSE;
     if (_ptr != NULL) {
+        cls_vector_t* _vec;
+        __memory_page_t* _page;
         for (_i = 0; _i < _c; ++_i) {
-            if (__free_internal(cls_vector_get(&__memory.mem_banks, _i),
-                                _ptr) == CLS_TRUE) {
-                _freed = CLS_TRUE;
-                _i = _c;
+            _vec = &__memory.pool[_i];
+            _d = cls_vector_total(_vec);
+            for (_j = 0; _j < _d; ++_j) {
+                _page = cls_vector_get(_vec, _i);
+                if (_page != NULL && __free_internal(_page, _ptr) == CLS_TRUE) {
+                    _freed = CLS_TRUE;
+                    _j = _d;
+                    _i = _c;
+                }
             }
         }
     }
@@ -277,12 +331,17 @@ void cls_free_new(void* _ptr) {
 }
 
 int cls_memory_free_list_null_check() {
-    unsigned int _i, _c = __memory.mem_banks.length;
+    unsigned int _i, _c = __memory.pool_count, _j, _d;
+    cls_vector_t* _vec;
     __memory_page_t* _page;
     for (_i = 0; _i < _c; ++_i) {
-        _page = __memory.mem_banks.items[_i];
-        if (__has_null(&_page->free_list)) {
-            return 1;
+        _vec = &__memory.pool[_i];
+        _d = _vec->length;
+        for (_j = 0; _j < _d; ++_j) {
+            _page = _vec->items[_j];
+            if (_page != NULL && __has_null(&_page->free_list)) {
+                return 1;
+            }
         }
     }
     return 0;
@@ -343,14 +402,27 @@ char* cls_memory_serialize() {
     cJSON_AddNumberToObject(_root, "total_allocations",
                             __memory.total_allocations);
     cJSON_AddNumberToObject(_root, "total_frees", __memory.total_frees);
-    cJSON *_banks = cJSON_CreateArray(), *_pageJ;
-    cJSON_AddItemToObject(_root, "mem_banks", _banks);
-    int _i, _c = cls_vector_total(&__memory.mem_banks);
+    cJSON_AddNumberToObject(_root, "pool_count", __memory.pool_count);
+    cJSON *_pools = cJSON_CreateArray(), *_vecJ, *_pageJ, *_pagesJ;
+    cJSON_AddItemToObject(_root, "pool", _pools);
+    int _i, _c = __memory.pool_count, _j, _d;
+    cls_vector_t* _vec;
     if (cls_memory_free_list_null_check()) CLS_CRASH_ME();
     for (_i = 0; _i < _c; ++_i) {
-        _page = cls_vector_get(&__memory.mem_banks, _i);
-        _pageJ = __memory_page_serialize(_page);
-        cJSON_AddItemToArray(_banks, _pageJ);
+        _vec = &__memory.pool[_i];
+        _vecJ = cJSON_CreateObject();
+        cJSON_AddItemToArray(_pools, _vecJ);
+        _d = cls_vector_total(_vec);
+        cJSON_AddNumberToObject(_vecJ, "size", _d);
+        _pagesJ = cJSON_CreateArray();
+        cJSON_AddItemToObject(_vecJ, "pages", _pagesJ);
+        for (_j = 0; _j < _d; ++_d) {
+            _page = cls_vector_get(_vec, _i);
+            if (_page != NULL) {
+                _pageJ = __memory_page_serialize(_page);
+                cJSON_AddItemToArray(_pagesJ, _pageJ);
+            }
+        }
     }
     char* _json = cJSON_PrintBuffered(_root, 8192, 0);
     cJSON_Delete(_root);
