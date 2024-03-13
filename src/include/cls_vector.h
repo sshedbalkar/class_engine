@@ -54,5 +54,8 @@ extern cJSON *cls_vector_serialize_compact(cls_vector_t *_vec);
 extern void cls_vector_serialize_compact_no_alloc(cls_vector_t *_vec,
                                                   char *_buff,
                                                   unsigned int _size);
+extern void cls_vector_set_mem_allocators(cls_fn_vp_ul_t _fn_alloc,
+                                          cls_fn_v_vp_t _fn_free,
+                                          cls_fn_vp_vp_ul_t _fn_realloc);
 
 #endif    // __CLS_VECTOR_H

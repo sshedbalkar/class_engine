@@ -33,6 +33,8 @@ typedef void* (*cls_fn_vp_v_t)();
 typedef const char* (*cls_fn_ccp_vp_i_t)(void*, int);
 typedef void* (*cls_fn_vp_vp_t)(void*);
 typedef int (*cls_fn_i_vp_vp_t)(void*, void*);
+typedef void* (*cls_fn_vp_ul_t)(unsigned long);
+typedef void* (*cls_fn_vp_vp_ul_t)(void*, unsigned long);
 
 typedef struct {
     cls_module_type_t type;
@@ -41,6 +43,12 @@ typedef struct {
     cls_fn_vp_vp_t serialize;
     cls_fn_i_vp_vp_t dserialize;
 } cls_obj_static_t;
+
+typedef struct cls_mem_allocator_hooks_t {
+    cls_fn_vp_ul_t fn_alloc;
+    cls_fn_v_vp_t fn_free;
+    cls_fn_vp_vp_ul_t fn_realloc;
+} cls_mem_allocator_hooks_t;
 
 extern cJSON* cls_static_module_serialize(cls_obj_static_t* _obj);
 extern bool_t cls_static_module_deserialize(cls_obj_static_t* _obj,

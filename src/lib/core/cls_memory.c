@@ -11,6 +11,7 @@
 #include "cls_memory.h"
 #include "cls_console.h"
 #include "cls_vector.h"
+#include "cls_vector_p.h"
 #include "cls_utils.h"
 #include "cls_error.h"
 
@@ -52,27 +53,27 @@
 static unsigned int __page_count =
     21;    // Should be the size of the array below
 static unsigned int __page_chunk_counts[] = {
-    8,      // 2^0  = 1
-    128,    // 2^1  = 2
-    128,    // 2^2  = 4
-    128,    // 2^3  = 8
-    128,    // 2^4  = 16
-    128,    // 2^5  = 32
-    512,    // 2^6  = 64
-    16,     // 2^7  = 128
-    16,     // 2^8  = 256
-    16,     // 2^9  = 512
-    16,     // 2^10 = 1024
-    16,     // 2^11 = 2048
-    8,      // 2^12 = 4096
-    8,      // 2^13 = 8192
-    4,      // 2^14 = 16384
-    2,      // 2^15 = 32768
-    2,      // 2^16 = 65536
-    2,      // 2^17 = 131072
-    1,      // 2^18 = 262144
-    1,      // 2^19 = 524288
-    1,      // 2^20 = 1048576
+    8,       // 2^0  = 1
+    128,     // 2^1  = 2
+    128,     // 2^2  = 4
+    128,     // 2^3  = 8
+    512,     // 2^4  = 16
+    128,     // 2^5  = 32
+    1024,    // 2^6  = 64
+    32,      // 2^7  = 128
+    16,      // 2^8  = 256
+    16,      // 2^9  = 512
+    16,      // 2^10 = 1024
+    16,      // 2^11 = 2048
+    8,       // 2^12 = 4096
+    8,       // 2^13 = 8192
+    4,       // 2^14 = 16384
+    2,       // 2^15 = 32768
+    2,       // 2^16 = 65536
+    2,       // 2^17 = 131072
+    1,       // 2^18 = 262144
+    1,       // 2^19 = 524288
+    1,       // 2^20 = 1048576
 };
 typedef struct __memory_raw_t {
     size_t size;
@@ -131,13 +132,13 @@ static __memory_page_t* __create_page(size_t _chunk_size,
     _page->multi_frees = 0;
     _page->max_in_use = 0;
 #endif
-    cls_vector_init_capacity(&_page->free_list, _chunk_count);
+    cls_vector_init_capacity_p(&_page->free_list, _chunk_count);
     return _page;
 }
 
 static void __destroy_page(__memory_page_t* _page) {
     // cls_print("Freeing page: chunk: %d\n", _page->chunk_size);
-    cls_vector_free(&_page->free_list);
+    cls_vector_free_p(&_page->free_list);
     _page->next_available = NULL;
     cls_free(_page->raw.memory);
     _page->raw.memory = NULL;
@@ -152,16 +153,40 @@ int __has_null(cls_vector_t* _vec) {
     return 0;
 }
 
+static __memory_page_t* __get_page_containing_ptr(void* _ptr) {
+    int _i, _c = __memory.pool_count, _j, _d;
+    if (_ptr != NULL) {
+        cls_vector_t* _vec;
+        __memory_page_t* _page;
+        for (_i = 0; _i < _c; ++_i) {
+            _vec = &__memory.pool[_i];
+            _d = cls_vector_total(_vec);
+            for (_j = 0; _j < _d; ++_j) {
+                _page = cls_vector_get(_vec, _j);
+                if (_page != NULL && _ptr >= _page->raw.memory &&
+                    _ptr <= _page->chunk_last) {
+                    if (((long)_ptr - (long)_page->raw.memory) %
+                            _page->chunk_size ==
+                        0) {
+                        return _page;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 void cls_memory_static_init() {
     unsigned int _i, _chunkSz;
     __memory_page_t* _page;
     __memory.pool_count = 0;
     for (_i = 0; _i < __page_count; ++_i) {
         ++__memory.pool_count;
-        cls_vector_init(&__memory.pool[_i]);
+        cls_vector_init_p(&__memory.pool[_i]);
         _chunkSz = 1 << _i;
         _page = __create_page(__charSz * _chunkSz, __page_chunk_counts[_i]);
-        cls_vector_add(&__memory.pool[_i], _page);
+        cls_vector_add_p(&__memory.pool[_i], _page);
     }
 #ifdef CLS_DEBUG
     __memory.total_allocations = 0;
@@ -183,7 +208,7 @@ void cls_memory_static_term() {
                 cls_vector_replace(_vec, _i, NULL);
             }
         }
-        cls_vector_free(_vec);
+        cls_vector_free_p(_vec);
     }
 }
 
@@ -241,17 +266,16 @@ void* cls_alloc_new(size_t _size) {
             // _ptr = cls_alloc(_size);
             _page = __create_page(__charSz * (1 << _pool_id),
                                   __page_chunk_counts[_pool_id]);
-            cls_vector_add(_vec, _page);
-            // cls_print("Adding a new page, chunk: %d, count: %d, new len:
-            // %d\n",
-            //   (1 << _pool_id), _c, cls_vector_total(_vec));
+            cls_vector_add_p(_vec, _page);
+            cls_print("Adding a new page, chunk: %d, count: %d, new len: %d\n",
+                      (1 << _pool_id), _c, cls_vector_total(_vec));
             return cls_alloc_new(_size);
         }
     } else {
         cls_print("Mem request unavailable: %d, bank: %d\n", _size, _pool_id);
         _ptr = cls_alloc(_size);
     }
-    // VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
+    VALGRIND_MALLOCLIKE_BLOCK(_ptr, _size, 0, 0);
     return _ptr;
 }
 
@@ -307,7 +331,7 @@ static bool_t __free_internal(__memory_page_t* _page, void* _ptr) {
 }
 
 void cls_free_new(void* _ptr) {
-    // VALGRIND_FREELIKE_BLOCK(_ptr, 0);
+    VALGRIND_FREELIKE_BLOCK(_ptr, 0);
     unsigned int _i, _c = __memory.pool_count, _j, _d;
     bool_t _freed = CLS_FALSE;
     if (_ptr != NULL) {
@@ -431,6 +455,20 @@ char* cls_memory_serialize() {
     return _json;
 }
 #endif
+
+void* cls_realloc_new(void* _ptr, size_t _new_size) {
+    __memory_page_t* _page = __get_page_containing_ptr(_ptr);
+    if (_page != NULL) {
+        void* _new_ptr = cls_alloc_new(_new_size);
+        memcpy(_new_ptr, _ptr, _page->chunk_size);
+        cls_free_new(_ptr);
+        return _new_ptr;
+    }
+    cls_error_set(CLS_ERROR_RECOVERABLE, CLS_ERR_ID_MEM_PAGE_UNKNOWN_ALLOCATION,
+                  "Unknown chunk size");
+    cls_print("[MEM]Realloc: Unknown mem allocation: %p\n", _ptr);
+    return 0;
+}
 ////////////////////////////////////////////////////////
 void* cls_alloc(size_t size) { return malloc(size); }
 void* cls_alloc_c(size_t _size, void* _context) {

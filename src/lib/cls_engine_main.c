@@ -35,6 +35,8 @@ cls_obj_static_t* cls_engine_static_init() {
     cls_util_static_init();
     cls_memory_static_init();
     //
+    cls_vector_set_mem_allocators(cls_alloc_new, cls_free_new, cls_realloc_new);
+    //
     cJSON_Hooks _hooks;
     _hooks.malloc_fn = cls_alloc_new;
     _hooks.free_fn = cls_free_new;
@@ -89,6 +91,7 @@ int cls_engine_static_term() {
     cls_print("\nMem Report: %s\n", _memJson);
     cls_print("memJson: %p\n", _memJson);
     cls_free_new(_memJson);
+    //
     cls_memory_static_term();
     return 0;
 }

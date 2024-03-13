@@ -16,42 +16,71 @@
 #include "cls_defines.h"
 #endif
 
-void cls_vector_init(cls_vector_t *v) {
-    cls_vector_init_capacity(v, VECTOR_INIT_CAPACITY);
-}
+cls_mem_allocator_hooks_t __mem_hooks_stock = {cls_alloc, cls_free,
+                                               cls_realloc};
 
-void cls_vector_init_capacity(cls_vector_t *v, size_t capacity) {
+cls_mem_allocator_hooks_t __mem_hooks_custom;
+
+void __vector_init_capacity(cls_vector_t *v, size_t capacity,
+                            cls_fn_vp_ul_t _fn_alloc) {
     v->capacity = capacity;
     v->length = 0;
     if (capacity < 1) return;
     size_t _sz = sizeof(void *) * v->capacity;
-    v->items = cls_alloc(_sz);
+    v->items = _fn_alloc(_sz);
     cls_memset(v->items, 0, _sz);
+}
+
+inline void cls_vector_init(cls_vector_t *v) {
+    __vector_init_capacity(v, VECTOR_INIT_CAPACITY,
+                           __mem_hooks_custom.fn_alloc);
+}
+
+void cls_vector_init_p(cls_vector_t *v) {
+    __vector_init_capacity(v, VECTOR_INIT_CAPACITY, __mem_hooks_stock.fn_alloc);
+}
+
+inline void cls_vector_init_capacity(cls_vector_t *v, size_t capacity) {
+    __vector_init_capacity(v, capacity, __mem_hooks_custom.fn_alloc);
+}
+
+void cls_vector_init_capacity_p(cls_vector_t *v, size_t capacity) {
+    __vector_init_capacity(v, capacity, __mem_hooks_stock.fn_alloc);
 }
 
 int cls_vector_total(cls_vector_t *v) { return v->length; }
 
 int cls_vector_capacity(cls_vector_t *v) { return v->capacity; }
 
-static void cls_vector_resize(cls_vector_t *v, size_t capacity) {
+static void __vector_resize(cls_vector_t *v, size_t capacity,
+                            cls_fn_vp_vp_ul_t _fn_realloc) {
 #ifdef CLS_DEBUG
-    cls_print("cls_vector_resize: %d to %d\n", v->capacity, capacity);
+    cls_print("__vector_resize: %d to %d\n", v->capacity, capacity);
 #endif
 
-    void **items = cls_realloc(v->items, sizeof(void *) * capacity);
+    void **items = _fn_realloc(v->items, sizeof(void *) * capacity);
     if (items) {
         v->items = items;
         v->capacity = capacity;
     }
 }
 
-unsigned int cls_vector_add(cls_vector_t *v, void *item) {
+unsigned int __vector_add(cls_vector_t *v, void *item,
+                          cls_fn_vp_vp_ul_t _fn_realloc) {
     if (v->capacity == v->length) {
         if (v->capacity == 0) v->capacity = 1;
-        cls_vector_resize(v, v->capacity * 2);
+        __vector_resize(v, v->capacity * 2, _fn_realloc);
     }
     v->items[v->length++] = item;
     return v->length;
+}
+
+inline unsigned int cls_vector_add(cls_vector_t *v, void *item) {
+    return __vector_add(v, item, __mem_hooks_custom.fn_realloc);
+}
+
+unsigned int cls_vector_add_p(cls_vector_t *v, void *item) {
+    return __vector_add(v, item, __mem_hooks_stock.fn_realloc);
 }
 
 void cls_vector_set(cls_vector_t *v, unsigned int index, void *item) {
@@ -79,7 +108,8 @@ void *cls_vector_get(cls_vector_t *v, unsigned int index) {
     return NULL;
 }
 
-void cls_vector_delete(cls_vector_t *v, unsigned int index) {
+void __vector_delete(cls_vector_t *v, unsigned int index,
+                     cls_fn_vp_vp_ul_t _fn_realloc) {
     if (index >= v->length) return;
     unsigned int i;
     for (i = index; i < v->length - 1; ++i) {
@@ -88,14 +118,30 @@ void cls_vector_delete(cls_vector_t *v, unsigned int index) {
     --v->length;
 #ifdef VECTOR_REALLOC_ON_DELETE
     if (v->length > 0 && v->length == v->capacity / 4)
-        cls_vector_resize(v, v->capacity / 2);
+        __vector_resize(v, v->capacity / 2, _fn_realloc);
 #endif
 }
 
-void cls_vector_free(cls_vector_t *v) {
-    cls_free(v->items);
+inline void cls_vector_delete(cls_vector_t *v, unsigned int index) {
+    __vector_delete(v, index, __mem_hooks_custom.fn_realloc);
+}
+
+inline void cls_vector_delete_p(cls_vector_t *v, unsigned int index) {
+    __vector_delete(v, index, __mem_hooks_stock.fn_realloc);
+}
+
+void __vector_free(cls_vector_t *v, cls_fn_v_vp_t _fn_free) {
+    _fn_free(v->items);
     v->length = 0;
     v->capacity = 0;
+}
+
+inline void cls_vector_free(cls_vector_t *v) {
+    __vector_free(v, __mem_hooks_custom.fn_free);
+}
+
+void cls_vector_free_p(cls_vector_t *v) {
+    __vector_free(v, __mem_hooks_stock.fn_free);
 }
 
 void cls_vector_foreach(cls_vector_t *_v, cls_fn_v_vp_ui_vp_t _fn,
@@ -106,11 +152,11 @@ void cls_vector_foreach(cls_vector_t *_v, cls_fn_v_vp_ui_vp_t _fn,
     }
 }
 
-void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
-                          void *_data) {
+void __vector_insert_at(cls_vector_t *_vec, unsigned int _index, void *_data,
+                        cls_fn_vp_vp_ul_t _fn_realloc) {
     if (_vec->capacity == _vec->length) {
         if (_vec->capacity == 0) _vec->capacity = 1;
-        cls_vector_resize(_vec, _vec->capacity * 2);
+        __vector_resize(_vec, _vec->capacity * 2, _fn_realloc);
     }
     if (_vec->length > 0) {
         int _i;
@@ -120,6 +166,16 @@ void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
     }
     _vec->items[_index] = _data;
     ++_vec->length;
+}
+
+inline void cls_vector_insert_at(cls_vector_t *_vec, unsigned int _index,
+                                 void *_data) {
+    __vector_insert_at(_vec, _index, _data, __mem_hooks_custom.fn_realloc);
+}
+
+inline void cls_vector_insert_at_p(cls_vector_t *_vec, unsigned int _index,
+                                   void *_data) {
+    __vector_insert_at(_vec, _index, _data, __mem_hooks_stock.fn_realloc);
 }
 
 // Only works for vectors populated using 'cls_vector_insert_in_asc_order()'
@@ -194,7 +250,7 @@ cJSON *cls_vector_serialize_compact(cls_vector_t *_vec) {
 #ifdef CLS_DEBUG_LIVE
     cJSON *_ptrJ;
     int _j, _l = _vec->length;
-    char *_buff = cls_alloc(16);
+    char *_buff = __mem_hooks_custom.fn_alloc(16);
     for (_j = 0; _j < _l; ++_j) {
         // if (_vec->items[_j] == NULL) {
         //     cls_print("Len: %d, Cap: %d, inserting null\n", _l,
@@ -204,7 +260,7 @@ cJSON *cls_vector_serialize_compact(cls_vector_t *_vec) {
         _ptrJ = cJSON_CreateString(_buff);
         cJSON_AddItemToArray(_itemsJ, _ptrJ);
     }
-    cls_free(_buff);
+    __mem_hooks_custom.fn_free(_buff);
 #endif
     //
     return _itemsJ;
@@ -229,4 +285,12 @@ cJSON *cls_vector_serialize(cls_vector_t *_vec) {
     cJSON_AddNumberToObject(_vecJ, "capacity", _vec->capacity);
     cJSON_AddItemToObject(_vecJ, "items", cls_vector_serialize_compact(_vec));
     return _vecJ;
+}
+
+inline void cls_vector_set_mem_allocators(cls_fn_vp_ul_t _fn_alloc,
+                                          cls_fn_v_vp_t _fn_free,
+                                          cls_fn_vp_vp_ul_t _fn_realloc) {
+    __mem_hooks_custom.fn_alloc = _fn_alloc;
+    __mem_hooks_custom.fn_free = _fn_free;
+    __mem_hooks_custom.fn_realloc = _fn_realloc;
 }
