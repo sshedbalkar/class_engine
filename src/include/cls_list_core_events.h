@@ -15,6 +15,7 @@ typedef enum {
     CLS_EVT_QUIT_WINDOW,
     CLS_EVT_QUIT,
     CLS_EVT_SDL_EVENT,
+    CLS_EVT_THRD_CREATE,
     //
     CLS_EVT_MAX
 } cls_events_t;

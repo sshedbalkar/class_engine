@@ -18,6 +18,7 @@
 #include "cJSON.h"
 #include "cls_utils.h"
 #include "cls_modules.h"
+#include "cls_threads.h"
 
 static cls_obj_static_t __base = {CLS_ENGINE, (cls_fn_vp_v_t)&cls_engine_ctor,
                                   (cls_fn_i_vp_t)&cls_engine_dtor,
@@ -48,6 +49,7 @@ cls_obj_static_t* cls_engine_static_init() {
     cls_timer_static_init();
     // CLS_GLUE,
     cls_events_static_init();
+    cls_threads_static_init();
     // CLS_CORE,
     // CLS_CONSOLE,
     cls_modules_static_register_module_type(cls_console_static_init());
@@ -81,6 +83,7 @@ int cls_engine_static_term() {
     cls_ui_static_term();
     cls_graphics_static_term();
     cls_console_static_term();
+    cls_threads_static_term();
     cls_events_static_term();
     cls_timer_static_term();
     cls_data_container_static_term();

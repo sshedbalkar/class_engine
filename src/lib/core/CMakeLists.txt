@@ -16,9 +16,12 @@ set(SourceFiles
     ${PROJECT_SOURCE_DIR}/cls_timer.c
     ${PROJECT_SOURCE_DIR}/cls_data_container.c
     ${PROJECT_SOURCE_DIR}/cls_error.c
+    ${PROJECT_SOURCE_DIR}/cls_threads.c
 )
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 add_library(${PROJECT_NAME} SHARED ${SourceFiles})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC pthread)

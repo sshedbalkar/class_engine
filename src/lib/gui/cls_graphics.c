@@ -22,13 +22,24 @@ static cls_obj_static_t __base = {
     CLS_GRAPHICS, (cls_fn_vp_v_t)&cls_graphics_ctor,
     (cls_fn_i_vp_t)&cls_graphics_dtor, (cls_fn_vp_vp_t)&cls_graphics_serz,
     (cls_fn_i_vp_vp_t)&cls_graphics_dsrz};
-
+/*      Naming Structure
+              __-----> Class
+             |  |
+                  _----> Handle
+                 | |
+                    __----> Module
+                   |  |
+                        ______----> Name
+                       |      |
+             CLS_H_SDL_EVT_OBJ
+*/
 unsigned int CLS_H_SDL_EVT_OBJ;
 unsigned int CLS_H_GRAPHICS_OBJ;
 static SDL_Event __sdl_evt;
 
 static cls_graphics_t* __create() {
-    cls_graphics_t* app = (cls_graphics_t*)cls_alloc(sizeof(cls_graphics_t));
+    cls_graphics_t* app =
+        (cls_graphics_t*)cls_alloc_new(sizeof(cls_graphics_t));
     return app;
 }
 
@@ -105,7 +116,7 @@ int cls_graphics_dtor(cls_graphics_t* obj) {
     SDL_DestroyWindow(obj->window);
     cls_modules_remove_all_modules(&obj->submodules);
     cls_vector_free(&obj->submodules);
-    cls_free(obj);
+    cls_free_new(obj);
     return 0;
 }
 

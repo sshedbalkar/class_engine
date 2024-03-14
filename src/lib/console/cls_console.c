@@ -31,7 +31,7 @@ cls_obj_static_t* cls_console_static_init() { return &__base; }
 int cls_console_static_term() { return 0; }
 
 static cls_console_t* __create() {
-    cls_console_t* app = (cls_console_t*)cls_alloc(sizeof(cls_console_t));
+    cls_console_t* app = (cls_console_t*)cls_alloc_new(sizeof(cls_console_t));
     return app;
 }
 
@@ -42,7 +42,7 @@ cls_console_t* cls_console_ctor() {
 }
 
 int cls_console_dtor(cls_console_t* obj) {
-    cls_free(obj);
+    cls_free_new(obj);
     return 0;
 }
 

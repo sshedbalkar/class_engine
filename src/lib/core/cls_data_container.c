@@ -8,6 +8,7 @@
 
 #include "cls_defines.h"
 #include "cls_vector.h"
+#include "cls_data_container.h"
 
 static cls_vector_t __data_map;
 

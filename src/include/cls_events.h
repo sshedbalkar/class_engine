@@ -9,6 +9,7 @@
 #define __CLS_EVENTS_H
 
 #include "cls_types.h"
+#include "cls_list_core_events.h"
 
 extern void cls_events_static_init();
 extern void cls_events_static_term();

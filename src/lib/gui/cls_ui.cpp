@@ -76,7 +76,7 @@ EXTERNC cls_obj_static_t* cls_ui_static_init() {
 EXTERNC int cls_ui_static_term() { return 0; }
 
 static cls_ui_t* __create() {
-    cls_ui_t* app = (cls_ui_t*)cls_alloc(sizeof(cls_ui_t));
+    cls_ui_t* app = (cls_ui_t*)cls_alloc_new(sizeof(cls_ui_t));
     return app;
 }
 
@@ -282,7 +282,7 @@ EXTERNC int cls_ui_dtor(cls_ui_t* obj) {
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    cls_free(obj);
+    cls_free_new(obj);
     __ui = nullptr;
     return 0;
 }

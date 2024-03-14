@@ -21,7 +21,7 @@ static void __unreg_event(cls_vector_t* _cbs, unsigned int _index,
     (void)_param;
     if (_cbs == NULL) return;
     cls_vector_free(_cbs);
-    cls_free(_cbs);
+    cls_free_new(_cbs);
     cls_vector_unset(&__events_map, _index);
 }
 
@@ -52,7 +52,7 @@ void cls_events_static_term() {
 int cls_events_reg_callback(unsigned int _evt, cls_fn_v_v_t _cb) {
     cls_vector_t* _cbs = (cls_vector_t*)cls_vector_get(&__events_map, _evt);
     if (_cbs == NULL) {
-        _cbs = cls_alloc(sizeof(cls_vector_t));
+        _cbs = cls_alloc_new(sizeof(cls_vector_t));
         cls_vector_init_capacity(_cbs, CLS_EVENTS_CALLBACKS_PER_EVENT_COUNT);
         cls_vector_set(&__events_map, _evt, _cbs);
     }

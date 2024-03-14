@@ -76,7 +76,7 @@
 // }
 typedef struct {
     int run_frames;
-    int run;
+    int run_app;
     int pause;
     unsigned int frames;
     timespec t0;
@@ -98,7 +98,7 @@ static void __get_time(timespec* ts) {
 static void __timer_loop() {
     while (__timer_data.run_frames) {
         ++__timer_data.frames;
-        if (__timer_data.run) {
+        if (__timer_data.run_app) {
             if (__timer_data.pause) continue;
             __get_time(&__timer_data.now);
             const timespec diff =
@@ -138,12 +138,12 @@ void cls_timer_static_term() {}
 
 void cls_timer_stop() {
     __timer_data.run_frames = 0;
-    __timer_data.run = 0;
+    __timer_data.run_app = 0;
 }
 
 void cls_timer_run() {
     __timer_data.run_frames = 1;
-    __timer_data.run = 1;
+    __timer_data.run_app = 1;
     __timer_loop();
 }
 
