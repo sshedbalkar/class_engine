@@ -12,8 +12,8 @@
 #include "cls_data_container.h"
 #include "cls_events.h"
 #include "cls_list_core_events.h"
-#include "cls_graphics.h"
-#include "cls_ui.h"
+// #include "cls_graphics.h"
+// #include "cls_ui.h"
 #include "cls_timer.h"
 #include "cJSON.h"
 #include "cls_utils.h"
@@ -54,9 +54,9 @@ cls_obj_static_t* cls_engine_static_init() {
     // CLS_CONSOLE,
     cls_modules_static_register_module_type(cls_console_static_init());
     // CLS_GRAPHICS,
-    cls_modules_static_register_module_type(cls_graphics_static_init());
+    // cls_modules_static_register_module_type(cls_graphics_static_init());
     // CLS_GRAPHICS_UI
-    cls_modules_static_register_module_type(cls_ui_static_init());
+    // cls_modules_static_register_module_type(cls_ui_static_init());
     cls_events_reg_callback(CLS_EVT_QUIT, &__on_event_quit);
     //
     cls_print("Serializing1\n");
@@ -80,8 +80,8 @@ cls_obj_static_t* cls_engine_static_init() {
 }
 
 int cls_engine_static_term() {
-    cls_ui_static_term();
-    cls_graphics_static_term();
+    // cls_ui_static_term();
+    // cls_graphics_static_term();
     cls_console_static_term();
     cls_threads_static_term();
     cls_events_static_term();

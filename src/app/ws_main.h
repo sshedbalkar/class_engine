@@ -9,9 +9,11 @@
 #define __WS_MAIN_H
 
 #include "class_engine.h"
+#include "cls_graphics.h"
 
 typedef struct {
     cls_engine_t* engine;
+    cls_graphics_t* graphics;
 } ws_app_t;
 
 extern ws_app_t* ws_app_ctor();
