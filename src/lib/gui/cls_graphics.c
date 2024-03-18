@@ -43,12 +43,15 @@ static cls_graphics_t* __create() {
     return app;
 }
 
-static void __on_enter_frame() {
+static void __on_enter_frame(cls_graphics_t* _gra) {
     // cls_print("GR Enter frame\n");
-    while (SDL_PollEvent(&__sdl_evt)) {
-        cls_events_trigger_event(CLS_EVT_SDL_EVENT);
-        if (__sdl_evt.type == SDL_QUIT) {
-            cls_events_trigger_event(CLS_EVT_QUIT);
+    while (_gra->app_run == CLS_TRUE) {
+        while (SDL_PollEvent(&__sdl_evt)) {
+            cls_events_trigger_event(CLS_EVT_SDL_EVENT);
+            if (__sdl_evt.type == SDL_QUIT) {
+                _gra->app_run = CLS_FALSE;
+                cls_events_trigger_event(CLS_EVT_QUIT);
+            }
         }
     }
 }
@@ -63,7 +66,7 @@ cls_obj_static_t* cls_graphics_static_init() {
         cls_print("SDL init error: %s\n", SDL_GetError());
     }
     CLS_H_SDL_EVT_OBJ = cls_data_container_add(&__sdl_evt);
-    cls_events_reg_callback(CLS_EVT_FRAME_ENTER, &__on_enter_frame);
+    // cls_events_reg_callback(CLS_EVT_FRAME_ENTER, &__on_enter_frame);
     return &__base;
 }
 
@@ -77,6 +80,7 @@ int cls_graphics_static_term() {
 cls_graphics_t* cls_graphics_ctor() {
     cls_graphics_t* _obj = __create();
     _obj->base = &__base;
+    _obj->app_run = CLS_TRUE;
     cls_vector_init(&_obj->submodules);
 // SDL Init
 // From 2.0.18: Enable native IME.

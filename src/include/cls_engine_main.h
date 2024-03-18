@@ -21,6 +21,13 @@ typedef struct cls_engine_t {
     cls_vector_t submodules;
 } cls_engine_t;
 
+typedef enum cls_engine_state_t {
+    CLS_ENG_STARTED = 0,
+    CLS_ENG_INITED,
+    CLS_ENG_QUIT_CALLED,
+    CLS_ENG_TERMINATED
+} cls_engine_state_t;
+
 extern cls_obj_static_t* cls_engine_static_init();
 
 extern int cls_engine_static_term();

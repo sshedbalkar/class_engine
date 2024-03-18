@@ -19,6 +19,7 @@ typedef struct {
     SDL_Window* window;
     SDL_Renderer* renderer;
     cls_vector_t submodules;
+    bool_t app_run;
 } cls_graphics_t;
 
 extern void cls_graphics_test1(cls_graphics_t* obj);

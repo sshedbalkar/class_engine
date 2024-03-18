@@ -57,6 +57,7 @@
         "math.h": "c",
         "cjson.h": "c",
         "valgrind.h": "c",
-        "cls_events.h": "c"
+        "cls_events.h": "c",
+        "cls_threads.h": "c"
     }
 }

@@ -15,6 +15,8 @@ typedef struct cls_thrd_create_t {
     void* user_data;
 } cls_thrd_create_t;
 
+extern unsigned int CLS_H_THRD_CREATE_OBJ;
+
 extern void cls_threads_static_init();
 extern void cls_threads_static_term();
 #endif    // __CLS_THREADS_H

@@ -30,7 +30,12 @@ static void __add_default_modules(cls_engine_t* eng) {
     cls_vector_add(&eng->submodules, console);
 }
 
-static void __on_event_quit() { cls_timer_stop(); }
+static cls_engine_state_t __eng_state = CLS_ENG_STARTED;
+
+static void __on_event_quit() {
+    __eng_state = CLS_ENG_QUIT_CALLED;
+    cls_timer_stop();
+}
 
 cls_obj_static_t* cls_engine_static_init() {
     cls_util_static_init();
@@ -76,6 +81,7 @@ cls_obj_static_t* cls_engine_static_init() {
     cls_print("\nMem2: %s\n", _memJson);
     cls_free_new(_memJson);
     cls_free_new(_ptr3);
+    __eng_state = CLS_ENG_INITED;
     return &__base;
 }
 
@@ -147,6 +153,7 @@ int cls_engine_run(cls_engine_t* eng) {
     cls_timer_run();
     return 0;
 }
+
 char _buff2[1024];
 const char* cls_engine_serialize(cls_engine_t* _eng) {
     cJSON* _root = cJSON_CreateObject();

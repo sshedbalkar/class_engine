@@ -18,6 +18,9 @@
 #include "cls_console.h"
 #include "cls_events.h"
 #include "cls_list_core_events.h"
+#include "cls_threads.h"
+#include "cls_memory.h"
+#include "cls_data_container.h"
 
 // #define SECS_IN_DAY (24 * 60 * 60)
 //
@@ -95,7 +98,8 @@ static void __get_time(timespec* ts) {
 
 // static unsigned int _count = 0;
 
-static void __timer_loop() {
+static void* __timer_loop(void* _user_data) {
+    (void)_user_data;
     while (__timer_data.run_frames) {
         ++__timer_data.frames;
         if (__timer_data.run_app) {
@@ -127,6 +131,7 @@ static void __timer_loop() {
         //  Dispatch frame events
         cls_events_trigger_event(CLS_EVT_FRAME_ENTER);
     }
+    return NULL;
 }
 
 void cls_timer_static_init() {
@@ -144,7 +149,12 @@ void cls_timer_stop() {
 void cls_timer_run() {
     __timer_data.run_frames = 1;
     __timer_data.run_app = 1;
-    __timer_loop();
+    // __timer_loop();
+    cls_thrd_create_t _thrd_data;
+    _thrd_data.fn_body = __timer_loop;
+    _thrd_data.user_data = NULL;
+    CLS_H_THRD_CREATE_OBJ = cls_data_container_add(&_thrd_data);
+    cls_events_trigger_event(CLS_EVT_THRD_CREATE);
 }
 
 void cls_timer_pause() { __timer_data.pause = 1; }
