@@ -33,10 +33,10 @@
     "prefix": ["crt","cpright","crtext"],
     "body": ["${BLOCK_COMMENT_START}*",
 	" * Copyright (c) Santosh Shedbalkar",
-	" * Year: 2024 - ${CURRENT_YEAR}"
+	" * Year: 2024 - ${CURRENT_YEAR}",
 	" * All rights reserved",
-	" *"
-	" * File: ${TM_FILENAME}"
+	" *",
+	" * File: ${TM_FILENAME}",
 	" ${BLOCK_COMMENT_END}",
 	""],
 	"description": "Inserts custom CopyRight text"

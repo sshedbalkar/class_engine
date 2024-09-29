@@ -90,8 +90,8 @@
 			}
 		},
 		{
+			"type": "shell",
 			"label": "Process_kill",
-			"type": "process",
 			"linux": {
 				"command": "${workspaceRoot}/scripts/linux/proc_term.sh",
 				"options": {
