@@ -33,11 +33,12 @@ Class Engine uses the following  dependencies
 - Install 
 
     `coredumpctl`
+    `sudo apt install systemd-coredump`
 
 - Make sure Output of the following command is similar
 ```sh
-sysctl -n kernel.core_pattern
-|/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h
+$ sysctl -n kernel.core_pattern
+kernel.core_pattern = |/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h
 ```
 #### Useful commands
 - List all core dump files
